@@ -1,0 +1,18 @@
+node_modules/
+.next/
+.turbo/
+dist/
+.env
+.env.local
+*.tsbuildinfo
+media/
+
+# Next.js auto-generated
+next-env.d.ts
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
