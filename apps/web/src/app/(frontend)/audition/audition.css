@@ -253,7 +253,12 @@
 
 .hero-title-line {
   display: block;
-  white-space: nowrap;
+}
+
+@media (min-width: 1121px) {
+  .hero-title-line {
+    white-space: nowrap;
+  }
 }
 
 .hero-lead {
