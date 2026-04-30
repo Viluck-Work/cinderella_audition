@@ -9,6 +9,8 @@ import type { AuditionData } from '@/lib/audition-defaults'
 import { mapAuditionData } from '@/lib/audition-mapper'
 import { buildThemeVars } from '@/lib/audition-theme'
 
+import AdditionalSection from './AdditionalSection'
+
 type Props = { data: AuditionData }
 
 export default function AuditionClient({ data: initialData }: Props) {
@@ -641,6 +643,11 @@ export default function AuditionClient({ data: initialData }: Props) {
               </div>
             </div>
           </section>
+
+          {/* Additional sections (CMS-managed templates) */}
+          {data.additionalSections.map((block, i) => (
+            <AdditionalSection key={i} block={block} />
+          ))}
 
           {/* CTA / Entry */}
           <section id="entry" className="cta section">

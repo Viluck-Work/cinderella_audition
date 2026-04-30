@@ -6,6 +6,12 @@ import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_PRIMARY_COLOR,
 } from '@/lib/audition-defaults'
+import { BannerBlock } from '@/payload/blocks/banner'
+import { FaqBlock } from '@/payload/blocks/faq'
+import { FeatureGridBlock } from '@/payload/blocks/feature-grid'
+import { StatsBlock } from '@/payload/blocks/stats'
+import { TextImageBlock } from '@/payload/blocks/text-image'
+import { TimelineBlock } from '@/payload/blocks/timeline'
 
 const revealOptions = [
   { label: '左から', value: 'left' },
@@ -538,6 +544,16 @@ export const Audition: GlobalConfig = {
           ],
         },
       ],
+    },
+    {
+      name: 'additionalSections',
+      type: 'blocks',
+      label: '追加セクション（テンプレート）',
+      admin: {
+        description:
+          '固定セクションの後ろに、テンプレートから選んでブロックを追加できます。並び替え・削除も自由。',
+      },
+      blocks: [FeatureGridBlock, StatsBlock, TextImageBlock, BannerBlock, FaqBlock, TimelineBlock],
     },
     {
       name: 'cta',

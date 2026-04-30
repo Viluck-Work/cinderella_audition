@@ -2,6 +2,66 @@ export const DEFAULT_PRIMARY_COLOR = '#d6b37a'
 export const DEFAULT_ACCENT_COLOR = '#df2f39'
 export const DEFAULT_BACKGROUND_COLOR = '#131316'
 
+export type FeatureGridBlockData = {
+  blockType: 'feature-grid'
+  label?: string
+  heading?: string
+  intro?: string
+  columns?: '2' | '3' | '4'
+  items: { icon?: string; title: string; desc?: string }[]
+}
+
+export type StatsBlockData = {
+  blockType: 'stats'
+  label?: string
+  heading?: string
+  intro?: string
+  items: { value: string; label: string; sub?: string }[]
+}
+
+export type TextImageBlockData = {
+  blockType: 'text-image'
+  label?: string
+  heading: string
+  body?: string
+  image?: string
+  imagePosition?: 'left' | 'right'
+  cta?: { label?: string; link?: string }
+}
+
+export type BannerBlockData = {
+  blockType: 'banner'
+  image?: string
+  heading: string
+  subheading?: string
+  cta?: { label?: string; link?: string }
+  overlay?: 'none' | 'light' | 'medium' | 'strong'
+}
+
+export type FaqBlockData = {
+  blockType: 'faq'
+  label?: string
+  heading?: string
+  intro?: string
+  items: { question: string; answer: string }[]
+}
+
+export type TimelineBlockData = {
+  blockType: 'timeline'
+  label?: string
+  heading?: string
+  intro?: string
+  items: { date: string; title: string; desc?: string }[]
+}
+
+export type AdditionalSectionBlock =
+  | FeatureGridBlockData
+  | StatsBlockData
+  | TextImageBlockData
+  | BannerBlockData
+  | FaqBlockData
+  | TimelineBlockData
+
 export type AuditionData = {
   theme: {
     primaryColor: string
@@ -129,6 +189,7 @@ export type AuditionData = {
     secondaryHref: string
     secondaryLabel: string
   }
+  additionalSections: AdditionalSectionBlock[]
 }
 
 export const AUDITION_DEFAULTS: AuditionData = {
@@ -452,4 +513,5 @@ export const AUDITION_DEFAULTS: AuditionData = {
     secondaryHref: '#tracks',
     secondaryLabel: '実績をもう一度見る',
   },
+  additionalSections: [],
 }

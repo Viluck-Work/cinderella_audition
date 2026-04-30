@@ -1,4 +1,8 @@
-import { AUDITION_DEFAULTS, type AuditionData } from './audition-defaults'
+import {
+  type AdditionalSectionBlock,
+  AUDITION_DEFAULTS,
+  type AuditionData,
+} from './audition-defaults'
 
 type MediaRef = number | { url?: string | null } | null | undefined
 
@@ -48,6 +52,7 @@ type RawAudition = {
   }
   faq?: Partial<Omit<AuditionData['faq'], 'items'>> & { items?: AuditionData['faq']['items'] }
   cta?: Partial<AuditionData['cta']>
+  additionalSections?: Array<Record<string, unknown>>
 }
 
 export function mapAuditionData(raw: unknown): AuditionData {
@@ -208,5 +213,102 @@ export function mapAuditionData(raw: unknown): AuditionData {
       secondaryHref: pick(r.cta?.secondaryHref, D.cta.secondaryHref),
       secondaryLabel: pick(r.cta?.secondaryLabel, D.cta.secondaryLabel),
     },
+    additionalSections: mapAdditionalSections(r.additionalSections),
   }
+}
+
+function mapAdditionalSections(
+  sections: Array<Record<string, unknown>> | undefined,
+): AdditionalSectionBlock[] {
+  if (!sections || sections.length === 0) return []
+  const out: AdditionalSectionBlock[] = []
+  for (const raw of sections) {
+    const block = raw as Record<string, unknown> & { blockType?: string }
+    switch (block.blockType) {
+      case 'feature-grid':
+        out.push({
+          blockType: 'feature-grid',
+          label: (block.label as string) || undefined,
+          heading: (block.heading as string) || undefined,
+          intro: (block.intro as string) || undefined,
+          columns: (block.columns as '2' | '3' | '4') || '3',
+          items: ((block.items as Record<string, unknown>[]) || []).map((i) => ({
+            icon: (i.icon as string) || undefined,
+            title: (i.title as string) || '',
+            desc: (i.desc as string) || undefined,
+          })),
+        })
+        break
+      case 'stats':
+        out.push({
+          blockType: 'stats',
+          label: (block.label as string) || undefined,
+          heading: (block.heading as string) || undefined,
+          intro: (block.intro as string) || undefined,
+          items: ((block.items as Record<string, unknown>[]) || []).map((i) => ({
+            value: (i.value as string) || '',
+            label: (i.label as string) || '',
+            sub: (i.sub as string) || undefined,
+          })),
+        })
+        break
+      case 'text-image':
+        out.push({
+          blockType: 'text-image',
+          label: (block.label as string) || undefined,
+          heading: (block.heading as string) || '',
+          body: (block.body as string) || undefined,
+          image: resolveMedia(block.image as MediaRef, ''),
+          imagePosition: (block.imagePosition as 'left' | 'right') || 'right',
+          cta: block.cta
+            ? {
+                label: ((block.cta as Record<string, unknown>).label as string) || undefined,
+                link: ((block.cta as Record<string, unknown>).link as string) || undefined,
+              }
+            : undefined,
+        })
+        break
+      case 'banner':
+        out.push({
+          blockType: 'banner',
+          image: resolveMedia(block.image as MediaRef, ''),
+          heading: (block.heading as string) || '',
+          subheading: (block.subheading as string) || undefined,
+          cta: block.cta
+            ? {
+                label: ((block.cta as Record<string, unknown>).label as string) || undefined,
+                link: ((block.cta as Record<string, unknown>).link as string) || undefined,
+              }
+            : undefined,
+          overlay: (block.overlay as 'none' | 'light' | 'medium' | 'strong') || 'medium',
+        })
+        break
+      case 'faq':
+        out.push({
+          blockType: 'faq',
+          label: (block.label as string) || undefined,
+          heading: (block.heading as string) || undefined,
+          intro: (block.intro as string) || undefined,
+          items: ((block.items as Record<string, unknown>[]) || []).map((i) => ({
+            question: (i.question as string) || '',
+            answer: (i.answer as string) || '',
+          })),
+        })
+        break
+      case 'timeline':
+        out.push({
+          blockType: 'timeline',
+          label: (block.label as string) || undefined,
+          heading: (block.heading as string) || undefined,
+          intro: (block.intro as string) || undefined,
+          items: ((block.items as Record<string, unknown>[]) || []).map((i) => ({
+            date: (i.date as string) || '',
+            title: (i.title as string) || '',
+            desc: (i.desc as string) || undefined,
+          })),
+        })
+        break
+    }
+  }
+  return out
 }
