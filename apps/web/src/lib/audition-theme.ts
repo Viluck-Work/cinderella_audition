@@ -45,7 +45,14 @@ const mixWithBlack = (
 const rgba = (rgb: [number, number, number], a: number) =>
   `rgba(${clamp(rgb[0])}, ${clamp(rgb[1])}, ${clamp(rgb[2])}, ${a})`
 
-export function buildThemeVars(bg: string, primary: string, accent: string): ThemeTokens {
+const isValidHex = (v: string) => /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v)
+
+export function buildThemeVars(
+  bg: string,
+  primary: string,
+  accent: string,
+  cardOverride?: string,
+): ThemeTokens {
   const rgb = hexToRgb(bg)
   const isDark = luminance(rgb) < 0.5
   // 視認性: 背景が暗ければ明るいテキスト、明るければ暗いテキスト
@@ -54,14 +61,19 @@ export function buildThemeVars(bg: string, primary: string, accent: string): The
   const soft = isDark ? 'rgba(246, 243, 238, 0.48)' : 'rgba(10, 10, 12, 0.48)'
   const line = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
 
-  // カードは「常に黒に寄せて」沈ませる。
-  // 鮮やかな色（青や赤など彩度が高く RGB のレンジが狭い色）でも
-  // 確実にコントラストが出る。
-  const cardSoft = mixWithBlack(rgb, 0.18) // 控えめ
-  const cardBase = mixWithBlack(rgb, 0.32) // 通常カード
-  const cardStrong = mixWithBlack(rgb, 0.5) // 強調（Flow ステップ等）
-  const cardDeep = mixWithBlack(rgb, 0.66) // 最深（Conditions ヘッダ）
-  const cardTransparent = mixWithBlack(rgb, 0.4) // 半透明背景
+  const useOverride = cardOverride && isValidHex(cardOverride)
+  // カードのアンカー色（card 変種すべての基準）。
+  //   オーバーライドがあれば、その色をそのままカード基準にする
+  //   なければ背景から自動算出（黒寄せ）
+  const cardAnchor = useOverride ? hexToRgb(cardOverride) : mixWithBlack(rgb, 0.32)
+
+  // 各 card 変種は cardAnchor を更に黒に寄せて派生
+  const cardSoft = useOverride ? cardAnchor : mixWithBlack(rgb, 0.18)
+  const cardBase = cardAnchor
+  const cardStrong = mixWithBlack(cardAnchor, 0.28)
+  const cardDeep = mixWithBlack(cardAnchor, 0.5)
+  // 半透明系は常に背景基準（背景の色味を残したいため）
+  const cardTransparent = mixWithBlack(rgb, 0.4)
   const cardTransparentStrong = mixWithBlack(rgb, 0.55)
 
   return {

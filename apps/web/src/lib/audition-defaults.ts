@@ -7,6 +7,8 @@ export type AuditionData = {
     primaryColor: string
     accentColor: string
     backgroundColor: string
+    /** 空文字列 or 不正値なら、背景から自動算出する */
+    cardColor: string
   }
   media: {
     heroImage: string
@@ -134,6 +136,7 @@ export const AUDITION_DEFAULTS: AuditionData = {
     primaryColor: DEFAULT_PRIMARY_COLOR,
     accentColor: DEFAULT_ACCENT_COLOR,
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
+    cardColor: '',
   },
   media: {
     heroImage: '/audition/assets/hero-fv.jpg',

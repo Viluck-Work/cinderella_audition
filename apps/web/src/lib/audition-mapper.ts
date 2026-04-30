@@ -60,6 +60,8 @@ export function mapAuditionData(raw: unknown): AuditionData {
       primaryColor: pick(r.theme?.primaryColor, D.theme.primaryColor),
       accentColor: pick(r.theme?.accentColor, D.theme.accentColor),
       backgroundColor: pick(r.theme?.backgroundColor, D.theme.backgroundColor),
+      // cardColor は空 ('') を保ちたいので pick の代わりに直接フォールバック
+      cardColor: r.theme?.cardColor ?? D.theme.cardColor,
     },
     media: {
       heroImage: resolveMedia(r.media?.heroImage, D.media.heroImage),

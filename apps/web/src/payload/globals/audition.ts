@@ -86,6 +86,19 @@ export const Audition: GlobalConfig = {
             },
           },
         },
+        {
+          name: 'cardColor',
+          type: 'text',
+          label: 'カード色（任意）',
+          defaultValue: '',
+          admin: {
+            description:
+              '空欄ならメインカラーから自動で計算します。指定するとパネル / セクション / FAQ などすべてのカード基準色になります。強調カード（Flow / Conditions ヘッダ等）はここから派生。',
+            components: {
+              Field: '@/payload/components/ColorField',
+            },
+          },
+        },
       ],
     },
     {

@@ -14,8 +14,12 @@ const ColorField: TextFieldClientComponent = ({ field, path }) => {
     typeof fieldWithDefault?.defaultValue === 'string'
       ? (fieldWithDefault.defaultValue as string)
       : '#d6b37a'
-  const current = (value as string | undefined) ?? defaultValue
-  const safe = isValidHex(current) ? current : defaultValue
+  // defaultValue が空文字列なら、このフィールドは「未指定 = 自動」を許容するモード
+  const optionalMode = defaultValue === ''
+  const current = (value as string | undefined) ?? ''
+  const isEmpty = current === ''
+  // color picker が表示するプレビュー色（空なら適当な中間色）
+  const safe = isValidHex(current) ? current : optionalMode ? '#888888' : defaultValue
 
   return (
     <div className="field-type" style={{ marginBottom: 16 }}>
@@ -41,7 +45,7 @@ const ColorField: TextFieldClientComponent = ({ field, path }) => {
           type="text"
           value={current}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="#d6b37a"
+          placeholder={optionalMode ? '空欄で自動' : '#d6b37a'}
           style={{
             width: 130,
             padding: '8px 10px',
@@ -51,17 +55,29 @@ const ColorField: TextFieldClientComponent = ({ field, path }) => {
             fontSize: 14,
           }}
         />
-        <span
-          aria-hidden="true"
-          style={{
-            display: 'inline-block',
-            width: 28,
-            height: 28,
-            borderRadius: 999,
-            background: safe,
-            border: '1px solid var(--theme-elevation-200)',
-          }}
-        />
+        {optionalMode && isEmpty ? (
+          <span
+            style={{
+              fontSize: 12,
+              color: 'var(--theme-elevation-600)',
+              fontStyle: 'italic',
+            }}
+          >
+            自動算出中
+          </span>
+        ) : (
+          <span
+            aria-hidden="true"
+            style={{
+              display: 'inline-block',
+              width: 28,
+              height: 28,
+              borderRadius: 999,
+              background: safe,
+              border: '1px solid var(--theme-elevation-200)',
+            }}
+          />
+        )}
         <button
           type="button"
           onClick={() => setValue(defaultValue)}
@@ -76,7 +92,7 @@ const ColorField: TextFieldClientComponent = ({ field, path }) => {
             fontSize: 12,
           }}
         >
-          デフォルトに戻す
+          {optionalMode ? '自動に戻す（クリア）' : 'デフォルトに戻す'}
         </button>
       </div>
       {field?.admin?.description && typeof field.admin.description === 'string' && (
