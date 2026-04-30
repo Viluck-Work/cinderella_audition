@@ -153,12 +153,12 @@
   transform: translateY(-1px);
 }
 
-.pill-outline {
+.audition-root .pill-outline {
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: var(--text);
 }
 
-.pill-solid {
+.audition-root .pill-solid {
   background: var(--text);
   color: #0a0a0c;
   font-weight: 700;
