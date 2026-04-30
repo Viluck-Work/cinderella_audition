@@ -1,6 +1,6 @@
 export const DEFAULT_PRIMARY_COLOR = '#d6b37a'
 export const DEFAULT_ACCENT_COLOR = '#df2f39'
-export const DEFAULT_BACKGROUND_COLOR = '#050505'
+export const DEFAULT_BACKGROUND_COLOR = '#131316'
 
 export type AuditionData = {
   theme: {

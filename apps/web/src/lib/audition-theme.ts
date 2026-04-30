@@ -44,8 +44,10 @@ const rgba = (rgb: [number, number, number], a: number) =>
 export function buildThemeVars(bg: string, primary: string, accent: string): ThemeTokens {
   const rgb = hexToRgb(bg)
   const isDark = luminance(rgb) < 0.5
-  // 暗い背景ならカードは少し明るく、明るい背景なら少し暗く
-  const dir = isDark ? 1 : -1
+  // カードは常に背景より「沈む」方向に色をずらす:
+  //   暗い背景 → カードはさらに黒寄り（マイナス方向）
+  //   明るい背景 → カードはさらに白寄り（プラス方向）
+  const dir = isDark ? -1 : 1
   const text = isDark ? '#f6f3ee' : '#0a0a0c'
   const muted = isDark ? 'rgba(246, 243, 238, 0.7)' : 'rgba(10, 10, 12, 0.7)'
   const soft = isDark ? 'rgba(246, 243, 238, 0.48)' : 'rgba(10, 10, 12, 0.48)'
