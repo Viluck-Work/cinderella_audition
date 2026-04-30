@@ -4,7 +4,16 @@ import './audition.css'
 
 import React, { useEffect, useState } from 'react'
 
-const MV_LIST = [
+type MVItem = {
+  id: string
+  kicker: string
+  title: string
+  desc: string
+  href: string
+  start?: string
+}
+
+const MV_LIST: MVItem[] = [
   {
     id: 'Cg2UF5GqJzw',
     kicker: 'MV 01',
@@ -38,8 +47,11 @@ const MV_LIST = [
 
 export default function AuditionClient() {
   const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({})
+  const [navOpen, setNavOpen] = useState(false)
 
   useEffect(() => {
+    const reduceMotion =
+      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const revealObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -67,7 +79,8 @@ export default function AuditionClient() {
     document.querySelectorAll('.section').forEach((el) => sectionObserver.observe(el))
 
     const parallaxNodes = document.querySelectorAll<HTMLElement>('.parallax')
-    const updateParallax = () => {
+    let rafId = 0
+    const runParallax = () => {
       const vh = window.innerHeight || 1
       parallaxNodes.forEach((node) => {
         const rect = node.getBoundingClientRect()
@@ -75,34 +88,43 @@ export default function AuditionClient() {
         const offset = (rect.top + rect.height / 2 - vh / 2) * speed
         node.style.transform = `translate3d(0, ${offset * -0.18}px, 0)`
       })
+      rafId = 0
     }
-    updateParallax()
-    window.addEventListener('scroll', updateParallax, { passive: true })
-    window.addEventListener('resize', updateParallax)
+    const scheduleParallax = () => {
+      if (reduceMotion) return
+      if (rafId) return
+      rafId = window.requestAnimationFrame(runParallax)
+    }
+    if (!reduceMotion) runParallax()
+    window.addEventListener('scroll', scheduleParallax, { passive: true })
+    window.addEventListener('resize', scheduleParallax)
 
     const magneticNodes = document.querySelectorAll<HTMLElement>('.magnetic')
     const handlers: Array<{ node: HTMLElement; move: (e: MouseEvent) => void; reset: () => void }> =
       []
-    magneticNodes.forEach((node) => {
-      const reset = () => {
-        node.style.transform = ''
-      }
-      const move = (e: MouseEvent) => {
-        const rect = node.getBoundingClientRect()
-        const px = (e.clientX - rect.left) / rect.width - 0.5
-        const py = (e.clientY - rect.top) / rect.height - 0.5
-        node.style.transform = `perspective(1200px) rotateX(${py * -8}deg) rotateY(${px * 10}deg) translate3d(${px * 10}px, ${py * 10}px, 0)`
-      }
-      node.addEventListener('mousemove', move)
-      node.addEventListener('mouseleave', reset)
-      handlers.push({ node, move, reset })
-    })
+    if (!reduceMotion) {
+      magneticNodes.forEach((node) => {
+        const reset = () => {
+          node.style.transform = ''
+        }
+        const move = (e: MouseEvent) => {
+          const rect = node.getBoundingClientRect()
+          const px = (e.clientX - rect.left) / rect.width - 0.5
+          const py = (e.clientY - rect.top) / rect.height - 0.5
+          node.style.transform = `perspective(1200px) rotateX(${py * -8}deg) rotateY(${px * 10}deg) translate3d(${px * 10}px, ${py * 10}px, 0)`
+        }
+        node.addEventListener('mousemove', move)
+        node.addEventListener('mouseleave', reset)
+        handlers.push({ node, move, reset })
+      })
+    }
 
     return () => {
       revealObserver.disconnect()
       sectionObserver.disconnect()
-      window.removeEventListener('scroll', updateParallax)
-      window.removeEventListener('resize', updateParallax)
+      window.removeEventListener('scroll', scheduleParallax)
+      window.removeEventListener('resize', scheduleParallax)
+      if (rafId) window.cancelAnimationFrame(rafId)
       handlers.forEach(({ node, move, reset }) => {
         node.removeEventListener('mousemove', move)
         node.removeEventListener('mouseleave', reset)
@@ -110,8 +132,43 @@ export default function AuditionClient() {
     }
   }, [])
 
+  useEffect(() => {
+    document.body.style.overflow = navOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [navOpen])
+
   return (
     <div className="audition-root">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'JobPosting',
+            title: 'メンズアイドル新メンバー募集',
+            description:
+              '大阪から、夢と輝きを全国へ届ける次世代メンズアイドルを募集します。未経験歓迎。合格から約6ヶ月でデビュー。',
+            datePosted: '2026-04-01',
+            employmentType: 'CONTRACTOR',
+            hiringOrganization: {
+              '@type': 'Organization',
+              name: 'Cinderella entertainment',
+              sameAs: 'https://cin-dere-lla.com/',
+            },
+            jobLocation: {
+              '@type': 'Place',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: '大阪市',
+                addressRegion: '大阪府',
+                addressCountry: 'JP',
+              },
+            },
+          }),
+        }}
+      />
       <div className="site-shell">
         <header className="header">
           <div className="container header-inner">
@@ -138,9 +195,57 @@ export default function AuditionClient() {
               <a href="#entry" className="pill pill-solid">
                 応募する
               </a>
+              <button
+                type="button"
+                className="nav-toggle"
+                aria-label="メニューを開く"
+                aria-expanded={navOpen}
+                aria-controls="mobile-nav"
+                onClick={() => setNavOpen((v) => !v)}
+              >
+                <span
+                  className={`nav-toggle-bars${navOpen ? ' is-open' : ''}`}
+                  aria-hidden="true"
+                />
+              </button>
             </div>
           </div>
         </header>
+
+        <div
+          id="mobile-nav"
+          className={`mobile-nav${navOpen ? ' is-open' : ''}`}
+          aria-hidden={!navOpen}
+        >
+          <button
+            type="button"
+            className="mobile-nav-backdrop"
+            aria-label="メニューを閉じる"
+            tabIndex={navOpen ? 0 : -1}
+            onClick={() => setNavOpen(false)}
+          />
+          <nav className="mobile-nav-panel" aria-label="モバイルナビゲーション">
+            {[
+              ['#about', 'ABOUT'],
+              ['#tracks', 'TRACK RECORD'],
+              ['#groups', 'GROUPS'],
+              ['#support', 'SUPPORT'],
+              ['#flow', 'FLOW'],
+              ['#requirements', 'REQUIREMENTS'],
+              ['#faq', 'FAQ'],
+              ['#entry', 'ENTRY'],
+            ].map(([href, label]) => (
+              <a
+                key={href}
+                href={href}
+                tabIndex={navOpen ? 0 : -1}
+                onClick={() => setNavOpen(false)}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+        </div>
 
         <main id="top">
           {/* Hero */}
@@ -464,15 +569,7 @@ export default function AuditionClient() {
                 </article>
 
                 <article className="group-card magnetic reveal" data-reveal="right">
-                  <div
-                    className="group-visual"
-                    style={{
-                      background: `
-                        linear-gradient(180deg, rgba(5,5,5,0.08), rgba(5,5,5,0.58)),
-                        linear-gradient(120deg, rgba(214,179,122,0.14), transparent 44%),
-                        url('/audition/assets/live-stage.png') center 28% / cover no-repeat`,
-                    }}
-                  >
+                  <div className="group-visual group-visual-lumi">
                     <div className="group-badge">Growing Fast</div>
                     <div className="group-logo-wrap">
                       <div className="group-logo-panel">

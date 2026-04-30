@@ -20,6 +20,14 @@
   font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Times New Roman', Georgia, serif;
   line-height: 1.6;
   overflow-x: clip;
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+.audition-root :focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .audition-root img {
@@ -188,7 +196,7 @@
       rgba(5, 5, 5, 0.12) 46%,
       rgba(5, 5, 5, 0.72) 100%
     ),
-    url('/audition/assets/hero-fv.png') center center / cover no-repeat;
+    url('/audition/assets/hero-fv.jpg') center center / cover no-repeat;
   transform: scale(1.02) translate3d(0, 0, 0);
   transform-origin: center center;
   will-change: transform;
@@ -400,7 +408,7 @@
   min-height: 420px;
   background:
     linear-gradient(180deg, rgba(5, 5, 5, 0.08), rgba(5, 5, 5, 0.42)),
-    url('/audition/assets/audition-2027-announcement.png') center center / cover no-repeat;
+    url('/audition/assets/audition-2027-announcement.jpg') center center / cover no-repeat;
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
@@ -775,7 +783,7 @@
   background:
     linear-gradient(180deg, rgba(5, 5, 5, 0.06), rgba(5, 5, 5, 0.56)),
     linear-gradient(120deg, rgba(223, 47, 57, 0.18), transparent 42%),
-    url('/audition/assets/live-stage.png') center center / cover no-repeat;
+    url('/audition/assets/live-stage.jpg') center center / cover no-repeat;
   position: relative;
 }
 
@@ -1277,7 +1285,7 @@
         rgba(5, 5, 5, 0.82) 100%
       ),
       linear-gradient(90deg, rgba(5, 5, 5, 0.84), rgba(5, 5, 5, 0.18) 60%, rgba(5, 5, 5, 0.62)),
-      url('/audition/assets/hero-fv.png') 62% center / cover no-repeat;
+      url('/audition/assets/hero-fv.jpg') 62% center / cover no-repeat;
   }
 
   .hero-grid {
@@ -1507,5 +1515,160 @@
   .requirement-item,
   .faq-item {
     padding: 20px;
+  }
+}
+
+.group-visual-lumi {
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.08), rgba(5, 5, 5, 0.58)),
+    linear-gradient(120deg, rgba(214, 179, 122, 0.14), transparent 44%),
+    url('/audition/assets/live-stage.jpg') center 28% / cover no-repeat;
+}
+
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.nav-toggle-bars,
+.nav-toggle-bars::before,
+.nav-toggle-bars::after {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--text);
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease;
+}
+
+.nav-toggle-bars {
+  position: relative;
+}
+
+.nav-toggle-bars::before,
+.nav-toggle-bars::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.nav-toggle-bars::before {
+  top: -6px;
+}
+
+.nav-toggle-bars::after {
+  top: 6px;
+}
+
+.nav-toggle-bars.is-open {
+  background: transparent;
+}
+
+.nav-toggle-bars.is-open::before {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.nav-toggle-bars.is-open::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.mobile-nav.is-open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.mobile-nav-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(5, 5, 7, 0.7);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.mobile-nav.is-open .mobile-nav-backdrop {
+  opacity: 1;
+}
+
+.mobile-nav-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(78vw, 320px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 92px 28px 32px;
+  background: rgba(10, 10, 12, 0.96);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-nav.is-open .mobile-nav-panel {
+  transform: translateX(0);
+}
+
+.mobile-nav-panel a {
+  display: block;
+  padding: 14px 4px;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mobile-nav-panel a:hover {
+  color: var(--text);
+}
+
+@media (max-width: 1120px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 820px) {
+  .header-actions .pill-solid {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .audition-root,
+  .audition-root * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-media,
+  .parallax {
+    transform: none !important;
   }
 }
