@@ -20,6 +20,7 @@ const mapArray = <S, T>(
 }
 
 type RawAudition = {
+  theme?: Partial<AuditionData['theme']>
   media?: { heroImage?: MediaRef; featureImage?: MediaRef; lumiBackgroundImage?: MediaRef }
   hero?: Partial<AuditionData['hero']> & { stats?: AuditionData['hero']['stats'] }
   about?: Partial<Omit<AuditionData['about'], 'paragraphs'>> & {
@@ -55,6 +56,10 @@ export function mapAuditionData(raw: unknown): AuditionData {
   const D = AUDITION_DEFAULTS
 
   return {
+    theme: {
+      primaryColor: pick(r.theme?.primaryColor, D.theme.primaryColor),
+      accentColor: pick(r.theme?.accentColor, D.theme.accentColor),
+    },
     media: {
       heroImage: resolveMedia(r.media?.heroImage, D.media.heroImage),
       featureImage: resolveMedia(r.media?.featureImage, D.media.featureImage),

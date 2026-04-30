@@ -27,6 +27,7 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { default as default_c5322960aa1eb61016ac1ff9589177ba } from '@/payload/components/SharePreviewURL'
+import { default as default_9867b71f70a870a7cadc249fe18ef53e } from '@/payload/components/ColorField'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -88,5 +89,6 @@ export const importMap = {
   '@payloadcms/plugin-seo/client#PreviewComponent':
     PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   '@/payload/components/SharePreviewURL#default': default_c5322960aa1eb61016ac1ff9589177ba,
+  '@/payload/components/ColorField#default': default_9867b71f70a870a7cadc249fe18ef53e,
   '@payloadcms/next/rsc#CollectionCards': CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
 }

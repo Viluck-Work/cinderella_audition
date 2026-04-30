@@ -117,6 +117,10 @@ export default function AuditionClient({ data: initialData }: Props) {
     }
   }, [navOpen])
 
+  const themeVar = {
+    '--gold': data.theme.primaryColor,
+    '--accent': data.theme.accentColor,
+  } as React.CSSProperties
   const heroVar = { '--hero-image': `url('${data.media.heroImage}')` } as React.CSSProperties
   const featureVar = {
     '--feature-image': `url('${data.media.featureImage}')`,
@@ -136,7 +140,7 @@ export default function AuditionClient({ data: initialData }: Props) {
     )
 
   return (
-    <div className="audition-root">
+    <div className="audition-root" style={themeVar}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

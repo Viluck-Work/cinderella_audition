@@ -62,6 +62,9 @@ importers:
       '@payloadcms/storage-vercel-blob':
         specifier: ^3.84.0
         version: 3.84.0(@types/react@19.2.14)(monaco-editor@0.55.1)(next@15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.77.4))(payload@3.84.0(graphql@16.13.2)(typescript@5.9.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)
+      '@payloadcms/ui':
+        specifier: ^3.84.0
+        version: 3.84.0(@types/react@19.2.14)(monaco-editor@0.55.1)(next@15.5.15(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(sass@1.77.4))(payload@3.84.0(graphql@16.13.2)(typescript@5.9.3))(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)
       '@repo/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config

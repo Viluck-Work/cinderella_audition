@@ -1,6 +1,10 @@
 import type { GlobalConfig } from 'payload'
 
-import { AUDITION_DEFAULTS as D } from '@/lib/audition-defaults'
+import {
+  AUDITION_DEFAULTS as D,
+  DEFAULT_ACCENT_COLOR,
+  DEFAULT_PRIMARY_COLOR,
+} from '@/lib/audition-defaults'
 
 const revealOptions = [
   { label: '左から', value: 'left' },
@@ -34,6 +38,39 @@ export const Audition: GlobalConfig = {
           Field: '@/payload/components/SharePreviewURL',
         },
       },
+    },
+    {
+      name: 'theme',
+      type: 'group',
+      label: 'カラーテーマ',
+      admin: {
+        description:
+          'ブランドカラーを変更できます。「デフォルトに戻す」ボタンで元の配色に戻せます。',
+      },
+      fields: [
+        {
+          name: 'primaryColor',
+          type: 'text',
+          label: 'メインカラー（ゴールド系の差し色）',
+          defaultValue: DEFAULT_PRIMARY_COLOR,
+          admin: {
+            components: {
+              Field: '@/payload/components/ColorField',
+            },
+          },
+        },
+        {
+          name: 'accentColor',
+          type: 'text',
+          label: 'サブカラー（赤系のアクセント）',
+          defaultValue: DEFAULT_ACCENT_COLOR,
+          admin: {
+            components: {
+              Field: '@/payload/components/ColorField',
+            },
+          },
+        },
+      ],
     },
     {
       name: 'media',
