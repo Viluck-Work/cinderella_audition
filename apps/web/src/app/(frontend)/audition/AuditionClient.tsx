@@ -2,13 +2,28 @@
 
 import './audition.css'
 
-import React, { useEffect, useState } from 'react'
+import { useLivePreview } from '@payloadcms/live-preview-react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import type { AuditionData } from '@/lib/audition-defaults'
+import { mapAuditionData } from '@/lib/audition-mapper'
 
 type Props = { data: AuditionData }
 
-export default function AuditionClient({ data }: Props) {
+export default function AuditionClient({ data: initialData }: Props) {
+  const { data: liveRaw } = useLivePreview<Record<string, unknown>>({
+    initialData: initialData as unknown as Record<string, unknown>,
+    serverURL:
+      typeof window !== 'undefined'
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_SERVER_URL || '',
+    depth: 2,
+  })
+  const data = useMemo<AuditionData>(
+    () =>
+      (liveRaw as unknown) === initialData ? initialData : mapAuditionData(liveRaw as unknown),
+    [liveRaw, initialData],
+  )
   const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({})
   const [navOpen, setNavOpen] = useState(false)
 
