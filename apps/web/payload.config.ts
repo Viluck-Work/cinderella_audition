@@ -10,6 +10,7 @@ import { Media } from '@/payload/collections/media'
 import { Pages } from '@/payload/collections/pages'
 import { Posts } from '@/payload/collections/posts'
 import { Users } from '@/payload/collections/users'
+import { Audition } from '@/payload/globals/audition'
 import { Navigation } from '@/payload/globals/navigation'
 import { SiteSettings } from '@/payload/globals/site-settings'
 
@@ -36,7 +37,7 @@ export default buildConfig({
     user: 'users',
   },
   collections: [Users, Media, Pages, Posts],
-  globals: [SiteSettings, Navigation],
+  globals: [SiteSettings, Navigation, Audition],
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },

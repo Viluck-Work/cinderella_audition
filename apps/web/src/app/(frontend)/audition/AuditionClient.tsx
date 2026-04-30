@@ -4,48 +4,11 @@ import './audition.css'
 
 import React, { useEffect, useState } from 'react'
 
-type MVItem = {
-  id: string
-  kicker: string
-  title: string
-  desc: string
-  href: string
-  start?: string
-}
+import type { AuditionData } from '@/lib/audition-defaults'
 
-const MV_LIST: MVItem[] = [
-  {
-    id: 'Cg2UF5GqJzw',
-    kicker: 'MV 01',
-    title: 'ライブの熱量をそのまま映像へ',
-    desc: 'ステージで爆発する熱量と、ファンと一体になる瞬間。あなたもこの景色の真ん中に立てる。',
-    href: 'https://www.youtube.com/watch?v=Cg2UF5GqJzw',
-  },
-  {
-    id: 'CT8IMsUV9nM',
-    start: '1',
-    kicker: 'MV 02',
-    title: '世界観づくりまで見える映像展開',
-    desc: '楽曲の世界観を映像で表現する。歌って踊るだけじゃない、表現者としての可能性が広がる。',
-    href: 'https://www.youtube.com/watch?v=CT8IMsUV9nM&t=1s',
-  },
-  {
-    id: 'WikZL9akqh0',
-    kicker: 'MV 03',
-    title: '推せる理由が映像でも積み上がる',
-    desc: '初めて見た人さえ惹き込む、グループならではの空気感。あなたが加わる未来の物語が、ここから始まる。',
-    href: 'https://www.youtube.com/watch?v=WikZL9akqh0',
-  },
-  {
-    id: 'T162bkpr_5E',
-    kicker: 'MV 04',
-    title: '既存実績の厚みを一画面で見せる',
-    desc: '一本だけじゃない、何作も残せる場所。アーティストとしての軌跡を、ここで積み上げていける。',
-    href: 'https://www.youtube.com/watch?v=T162bkpr_5E',
-  },
-]
+type Props = { data: AuditionData }
 
-export default function AuditionClient() {
+export default function AuditionClient({ data }: Props) {
   const [playingVideos, setPlayingVideos] = useState<Record<string, boolean>>({})
   const [navOpen, setNavOpen] = useState(false)
 
@@ -138,6 +101,24 @@ export default function AuditionClient() {
       document.body.style.overflow = ''
     }
   }, [navOpen])
+
+  const heroVar = { '--hero-image': `url('${data.media.heroImage}')` } as React.CSSProperties
+  const featureVar = {
+    '--feature-image': `url('${data.media.featureImage}')`,
+  } as React.CSSProperties
+  const lumiVar = {
+    '--lumi-image': `url('${data.media.lumiBackgroundImage}')`,
+  } as React.CSSProperties
+
+  const renderConditionCell = (text: string) =>
+    text === '同左' ? (
+      <>
+        <span className="ditto-desktop">同左</span>
+        <span className="ditto-mobile">同上</span>
+      </>
+    ) : (
+      text
+    )
 
   return (
     <div className="audition-root">
@@ -250,36 +231,27 @@ export default function AuditionClient() {
         <main id="top">
           {/* Hero */}
           <section className="hero section">
-            <div className="hero-media parallax" data-speed="0.18" aria-hidden="true" />
+            <div
+              className="hero-media parallax"
+              data-speed="0.18"
+              aria-hidden="true"
+              style={heroVar}
+            />
             <div className="container hero-grid">
               <div className="hero-copy parallax" data-speed="0.1">
-                <div className="eyebrow">Cinderella entertainment audition</div>
-                <div className="hero-audition serif">Audition</div>
+                <div className="eyebrow">{data.hero.eyebrow}</div>
+                <div className="hero-audition serif">{data.hero.audition}</div>
                 <h1>
                   <span className="hero-title-line">
-                    夢を<span className="hero-highlight">現実（リアル）</span>へ。
+                    {data.hero.titleLine1Prefix}
+                    <span className="hero-highlight">{data.hero.titleHighlight}</span>
+                    {data.hero.titleLine1Suffix}
                   </span>
-                  <span className="hero-title-line">新メンバー募集。</span>
+                  <span className="hero-title-line">{data.hero.titleLine2}</span>
                 </h1>
-                <p className="hero-lead">
-                  &ldquo;自由&rdquo;と&ldquo;挑戦&rdquo;に可能性を創り出し、新たな&ldquo;エンターテインメント&rdquo;を届ける。
-                  Cinderella entertainment は、あなたの夢を実現する魔法の杖。
-                  大阪から、夢と輝きを全国へ届ける次世代メンズアイドルを募集します。
-                </p>
+                <p className="hero-lead">{data.hero.lead}</p>
                 <div className="hero-meta">
-                  {[
-                    {
-                      label: 'Base',
-                      value: 'Osaka',
-                      sub: '大阪を起点に、全国へ広がる輝きをつくる。',
-                    },
-                    {
-                      label: 'Debut',
-                      value: '~6ヶ月',
-                      sub: '合格から約6ヶ月を目安にデビューへ進行。',
-                    },
-                    { label: 'Track', value: '100%', sub: '全員デビュー前提で選考する体制です。' },
-                  ].map((stat) => (
+                  {data.hero.stats.map((stat) => (
                     <div key={stat.label} className="hero-stat magnetic">
                       <div className="hero-stat-label">{stat.label}</div>
                       <div className="hero-stat-value serif">{stat.value}</div>
@@ -288,11 +260,11 @@ export default function AuditionClient() {
                   ))}
                 </div>
                 <div className="hero-actions">
-                  <a href="#entry" className="pill pill-solid">
-                    今すぐエントリー
+                  <a href={data.hero.primaryHref} className="pill pill-solid">
+                    {data.hero.primaryLabel}
                   </a>
-                  <a href="#about" className="pill pill-outline">
-                    Cinderellaとは
+                  <a href={data.hero.secondaryHref} className="pill pill-outline">
+                    {data.hero.secondaryLabel}
                   </a>
                 </div>
               </div>
@@ -307,6 +279,7 @@ export default function AuditionClient() {
                 className="feature-visual reveal magnetic"
                 data-reveal="left"
                 aria-hidden="true"
+                style={featureVar}
               />
             </div>
           </section>
@@ -315,58 +288,28 @@ export default function AuditionClient() {
           <section id="about" className="section intro-band">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">About</div>
+                <div className="section-label">{data.about.label}</div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    夢を抱くだけで終わらせず、
+                    {data.about.titleLine1}
                     <br />
-                    夢を現実へ変えていく。
+                    {data.about.titleLine2}
                   </span>
                 </h2>
-                <p className="section-note">
-                  未経験から、確かに応援される存在へ。あなたの個性と本気を、楽曲・映像・ライブのすべての舞台で輝かせます。
-                </p>
+                <p className="section-note">{data.about.note}</p>
               </div>
               <div className="intro-grid">
                 <div className="intro-copy about-copy reveal" data-reveal="left">
-                  <p>
-                    「大阪から、夢と輝きを全国へ」。
-                    関西のカルチャーと熱量を原動力に、次世代を担うメンズアイドルを創出します。
-                    夢を持つ者もがシンデレラに。そう言い切れるだけの行動と投資を重ねています。
-                  </p>
-                  <p>
-                    シンデレラでは、まず「売れる」ことから始めます。
-                    認知と収益が生まれ、長く続けることで技術も磨かれていく。
-                    その上でファンへのサービスを深め、「本物のアイドル」を目指していきます。
-                  </p>
+                  {data.about.paragraphs.map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
                 </div>
                 <div
                   className="scoreboard reveal magnetic"
                   data-reveal="right"
                   aria-label="主要指標"
                 >
-                  {[
-                    {
-                      label: 'Founded',
-                      value: '2023.08',
-                      desc: '設立直後から複数グループを立ち上げ、運営を推進。',
-                    },
-                    {
-                      label: 'Location',
-                      value: '大阪',
-                      desc: '主な活動拠点は大阪。全国への展開を視野に運営。',
-                    },
-                    {
-                      label: 'Experience',
-                      value: '未経験歓迎',
-                      desc: '現在のメンバーの多くが未経験からスタート。',
-                    },
-                    {
-                      label: 'Vision',
-                      value: '5-10年',
-                      desc: '5年から10年続くグループづくりを視野に設計。',
-                    },
-                  ].map((s) => (
+                  {data.about.scoreboard.map((s) => (
                     <div key={s.label} className="score">
                       <small>{s.label}</small>
                       <strong className="serif">{s.value}</strong>
@@ -382,52 +325,26 @@ export default function AuditionClient() {
           <section id="tracks" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">Track Record</div>
+                <div className="section-label">{data.tracks.label}</div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    配信と映像で、
+                    {data.tracks.titleLine1}
                     <br />
-                    実績を示す。
+                    {data.tracks.titleLine2}
                   </span>
                 </h2>
-                <p className="section-note">
-                  あなたの歌声と姿は、ストリーミング、MV、カラオケ、街中のBGMまで届く。多くの人と出会えるステージが、ここにあります。
-                </p>
+                <p className="section-note">{data.tracks.note}</p>
               </div>
 
               <div className="platform-grid">
                 <article className="platform-panel">
-                  <h3>主要プラットフォームで展開</h3>
-                  <p>
-                    Apple Music、Spotify、TikTok、YouTube
-                    など、新たなファンと出会う場所へ、確実に楽曲を届ける。約50曲を各種ストリーミングサイトで配信し、オンラインでも熱量が伝わる導線を重ねています。
-                  </p>
+                  <h3>{data.tracks.platformPanelTitle}</h3>
+                  <p>{data.tracks.platformPanelDesc}</p>
                   <div className="platform-logos">
-                    {[
-                      {
-                        src: '/audition/assets/apple-music.svg',
-                        name: 'Apple Music',
-                        desc: '音源接点の強い定番プラットフォーム',
-                      },
-                      {
-                        src: '/audition/assets/spotify.svg',
-                        name: 'Spotify',
-                        desc: '新規リスナー獲得に強いストリーミング導線',
-                      },
-                      {
-                        src: '/audition/assets/tiktok.svg',
-                        name: 'TikTok',
-                        desc: '拡散と発見を生みやすい短尺動画接点',
-                      },
-                      {
-                        src: '/audition/assets/youtube.svg',
-                        name: 'YouTube',
-                        desc: 'MVとライブ映像で世界観を伝える基盤',
-                      },
-                    ].map((p) => (
+                    {data.tracks.platforms.map((p) => (
                       <div key={p.name} className="logo-chip reveal magnetic" data-reveal="zoom">
                         <div className="logo-icon">
-                          <img src={p.src} alt={p.name} />
+                          <img src={p.iconPath} alt={p.name} />
                         </div>
                         <div className="logo-body">
                           <strong>{p.name}</strong>
@@ -440,10 +357,8 @@ export default function AuditionClient() {
 
                 <article className="dam-panel">
                   <div>
-                    <h3>DAM配信など、実績の見え方も強い。</h3>
-                    <p>
-                      ただ音源を並べるのではなく、届き方そのものを設計する。カラオケ、放送、タイアップなど、応援の理由が増えていく実績形成にも投資しています。
-                    </p>
+                    <h3>{data.tracks.damPanelTitle}</h3>
+                    <p>{data.tracks.damPanelDesc}</p>
                   </div>
                   <div className="dam-mark">
                     <img src="/audition/assets/dam.png" alt="DAM" />
@@ -454,28 +369,30 @@ export default function AuditionClient() {
               {/* Music Videos */}
               <div className="mv-section">
                 <div className="mv-section-top section-top">
-                  <div className="section-label">Music Videos</div>
+                  <div className="section-label">{data.tracks.mvSectionLabel}</div>
                   <h3
                     className="section-title title-reveal"
                     style={{ fontSize: 'clamp(26px, 3.5vw, 42px)' }}
                   >
                     <span>
-                      MVという証明が、
+                      {data.tracks.mvSectionTitleLine1}
                       <br />
-                      世界観の厚みになる。
+                      {data.tracks.mvSectionTitleLine2}
                     </span>
                   </h3>
-                  <p className="section-note">
-                    歌だけじゃない、表情も世界観もすべてが作品になる。あなたの魅力を全方位から伝えるMVを、ここで残していけます。
-                  </p>
+                  <p className="section-note">{data.tracks.mvSectionNote}</p>
                 </div>
                 <div className="mv-grid">
-                  {MV_LIST.map((mv) => (
-                    <article key={mv.id} className="mv-card reveal magnetic" data-reveal="zoom">
-                      {playingVideos[mv.id] ? (
+                  {data.tracks.mvs.map((mv) => (
+                    <article
+                      key={mv.youtubeId}
+                      className="mv-card reveal magnetic"
+                      data-reveal="zoom"
+                    >
+                      {playingVideos[mv.youtubeId] ? (
                         <iframe
                           className="mv-frame"
-                          src={`https://www.youtube.com/embed/${mv.id}${mv.start ? `?start=${mv.start}&autoplay=1` : '?autoplay=1'}`}
+                          src={`https://www.youtube.com/embed/${mv.youtubeId}${mv.startSeconds ? `?start=${mv.startSeconds}&autoplay=1` : '?autoplay=1'}`}
                           title={mv.title}
                           loading="lazy"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -485,10 +402,12 @@ export default function AuditionClient() {
                         <button
                           className="mv-poster"
                           type="button"
-                          onClick={() => setPlayingVideos((prev) => ({ ...prev, [mv.id]: true }))}
+                          onClick={() =>
+                            setPlayingVideos((prev) => ({ ...prev, [mv.youtubeId]: true }))
+                          }
                           style={
                             {
-                              '--poster-image': `url('https://img.youtube.com/vi/${mv.id}/maxresdefault.jpg')`,
+                              '--poster-image': `url('https://img.youtube.com/vi/${mv.youtubeId}/maxresdefault.jpg')`,
                             } as React.CSSProperties
                           }
                         >
@@ -523,81 +442,49 @@ export default function AuditionClient() {
           <section id="groups" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">Groups</div>
+                <div className="section-label">{data.groups.label}</div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    すでに走っているグループがいる。
+                    {data.groups.titleLine1}
                     <br />
-                    だから未来像が明確になる。
+                    {data.groups.titleLine2}
                   </span>
                 </h2>
-                <p className="section-note">
-                  抽象的な「いつか」ではなく、どんな速度で、どこまで届くのか。既存グループの歩みそのものが、その答えになります。
-                </p>
+                <p className="section-note">{data.groups.note}</p>
               </div>
               <div className="group-list">
-                <article className="group-card magnetic reveal" data-reveal="left">
-                  <div className="group-visual">
-                    <div className="group-badge">Featured Group</div>
-                    <div className="group-logo-wrap">
-                      <div className="group-logo-panel">
-                        <img src="/audition/assets/neoaster-logo.png" alt="Neo Aster logo" />
+                {data.groups.items.map((g) => (
+                  <article
+                    key={g.name}
+                    className="group-card magnetic reveal"
+                    data-reveal={g.reveal}
+                  >
+                    <div
+                      className={`group-visual${g.visualVariant === 'lumi' ? ' group-visual-lumi' : ''}`}
+                      style={g.visualVariant === 'lumi' ? lumiVar : undefined}
+                    >
+                      <div className="group-badge">{g.badge}</div>
+                      <div className="group-logo-wrap">
+                        <div className="group-logo-panel">
+                          <img src={g.logoPath} alt={g.logoAlt} />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="group-copy">
-                    <div className="group-name">
-                      <strong className="serif">Neo Aster</strong>
-                      <span>ネオアスター</span>
-                    </div>
-                    <div className="group-meta">2024.04.21 debut / 4 members</div>
-                    <p>
-                      王道感と推進力を併せ持つグループ。ライブの説得力だけでなく、外部への波及も実績として示してきました。
-                    </p>
-                    <ul className="detail-list">
-                      {[
-                        '1stアルバムで週間オリコンチャート2位',
-                        '毎日放送「かまいたちの知らんけど」EDテーマ',
-                        '日本テレビ系「バズリズム02」出演',
-                        'FamilyMart店内放送・ビジョンで楽曲展開',
-                        '朝日放送テレビ「Music House」2026年1月度EDテーマ',
-                      ].map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-
-                <article className="group-card magnetic reveal" data-reveal="right">
-                  <div className="group-visual group-visual-lumi">
-                    <div className="group-badge">Growing Fast</div>
-                    <div className="group-logo-wrap">
-                      <div className="group-logo-panel">
-                        <img src="/audition/assets/lumi7s-logo.png" alt="Lumi7's logo" />
+                    <div className="group-copy">
+                      <div className="group-name">
+                        <strong className="serif">{g.name}</strong>
+                        <span>{g.nameKana}</span>
                       </div>
+                      <div className="group-meta">{g.meta}</div>
+                      <p>{g.desc}</p>
+                      <ul className="detail-list">
+                        {g.highlights.map((h) => (
+                          <li key={h}>{h}</li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                  <div className="group-copy">
-                    <div className="group-name">
-                      <strong className="serif">Lumi7&apos;s</strong>
-                      <span>ルミナス</span>
-                    </div>
-                    <div className="group-meta">2024.04.04 debut / 5 members</div>
-                    <p>
-                      立ち上がりの勢いそのままに、ライブ規模も注目度も拡大中。成長曲線が明快だからこそ、新メンバー募集にも説得力が宿ります。
-                    </p>
-                    <ul className="detail-list">
-                      {[
-                        '1周年単独ライブを Zepp Namba で開催し500名動員',
-                        '2026年4月28日に なんばHatch 公演を予定',
-                        '大阪拠点で急成長中の注目グループとして展開',
-                        'ライブとSNSの両輪でファンコミュニティを拡張',
-                      ].map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
+                  </article>
+                ))}
               </div>
             </div>
           </section>
@@ -606,35 +493,14 @@ export default function AuditionClient() {
           <section id="support" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">Support</div>
+                <div className="section-label">{data.support.label}</div>
                 <h2 className="section-title title-reveal">
-                  <span>シンデレラのグループが人気の理由。</span>
+                  <span>{data.support.title}</span>
                 </h2>
-                <p className="section-note">
-                  活動への投資、活動に専念できる環境、運営の熱量。この三つが噛み合うことで、成長は偶然に左右されにくくなります。
-                </p>
+                <p className="section-note">{data.support.note}</p>
               </div>
               <div className="reasons">
-                {[
-                  {
-                    no: '01 / Creative',
-                    title: '活動への投資',
-                    desc: '約2ヶ月に1回の新曲制作、有名作曲家への依頼、専属ダンス・ボイスレッスン、定期的な新衣装制作まで。伸び続けるために必要な投資を継続します。',
-                    reveal: 'left',
-                  },
-                  {
-                    no: '02 / Environment',
-                    title: '活動に専念できる環境',
-                    desc: 'イベント会場への送迎、撮影、編集、SNS更新サポートなど、表に出ない部分まで整え、活動に集中できる時間を増やします。',
-                    reveal: 'zoom',
-                  },
-                  {
-                    no: '03 / Management',
-                    title: '運営の熱量',
-                    desc: '主に30代前後の男性マネジメント陣が、公私を超えた関係性を大切にしながら支える。仕事に100%向き合い、活動を120%バックアップする体制です。',
-                    reveal: 'right',
-                  },
-                ].map((r) => (
+                {data.support.reasons.map((r) => (
                   <article
                     key={r.no}
                     className="reason-card magnetic reveal"
@@ -653,42 +519,14 @@ export default function AuditionClient() {
           <section id="flow" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">Flow</div>
+                <div className="section-label">{data.flow.label}</div>
                 <h2 className="section-title title-reveal">
-                  <span>合格からデビューまでの流れ。</span>
+                  <span>{data.flow.title}</span>
                 </h2>
-                <p className="section-note">
-                  合格後は、契約、準備、プレデビューを経て、約6ヶ月を目安にデビューを目指します。
-                </p>
+                <p className="section-note">{data.flow.note}</p>
               </div>
               <div className="flow">
-                {[
-                  {
-                    step: 'Step 01',
-                    title: 'オーディション合格',
-                    desc: '書類や面談など複数の審査を通じて、将来性と相性を丁寧に見ます。',
-                  },
-                  {
-                    step: 'Step 02',
-                    title: '契約と活動準備',
-                    desc: '契約内容はオンラインでも確認可能。必要に応じて保護者の同席にも対応します。',
-                  },
-                  {
-                    step: 'Step 03',
-                    title: 'レッスン・撮影・SNS整備',
-                    desc: '歌やダンスだけでなく、見せ方や発信も含めてプレデビューの準備を進めます。',
-                  },
-                  {
-                    step: 'Step 04',
-                    title: 'プレデビュー',
-                    desc: '舞台に立つ前から、オンラインや撮影素材を通じて応援される入口をつくります。',
-                  },
-                  {
-                    step: 'Step 05',
-                    title: '正式デビュー',
-                    desc: 'お客様の前でデビューライブを実施。その後は月10〜15回ほどのイベント出演を想定しています。',
-                  },
-                ].map((s) => (
+                {data.flow.steps.map((s) => (
                   <article key={s.step} className="flow-step">
                     <div className="step-index">{s.step}</div>
                     <div className="step-body">
@@ -705,37 +543,14 @@ export default function AuditionClient() {
           <section id="requirements" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">Requirements</div>
+                <div className="section-label">{data.requirements.label}</div>
                 <h2 className="section-title title-reveal">
-                  <span>弊社で求めるアイドルの人物像</span>
+                  <span>{data.requirements.title}</span>
                 </h2>
-                <p className="section-note">
-                  経験よりも、まっすぐな気持ちと素直さ。ファンを大切にできる人と、長く一緒に走っていきたい。
-                </p>
+                <p className="section-note">{data.requirements.note}</p>
               </div>
               <div className="requirements-section">
-                {[
-                  {
-                    title: '合格基準',
-                    desc: '「アイドル活動未経験」でも一切問題ありません。現在のメンバー8割は未経験です。',
-                  },
-                  {
-                    title: '人物像',
-                    desc: '「素直でいいやつ」です。素直なやつは「成長」し、いいやつは「周りから応援される」人です。私たちは、グループとしての活動と、ファンを喜ばせることを最優先します。',
-                  },
-                  {
-                    title: 'アイドルとして',
-                    desc: 'メンズアイドルの価値の最も重要なものは「今日来てくれたファンを幸せにできるか」です。「稼ぎたいから」アイドルをやる人は弊社には不要です。',
-                  },
-                  {
-                    title: '長く常に成長',
-                    desc: 'メンズアイドルグループの平均年数は1.5年と言われています。弊社では今後5年〜10年活動できるようなグループを作ることをビジョンとしておりますので、短期目線でやりたい方は合わないかもしれないです。',
-                  },
-                  {
-                    title: '他者を尊重',
-                    desc: '応援してくれるファンの皆様、サポートしてくれるスタッフ、イベント会場の設営の方、最も近くにいる味方の家族。それぞれの方々に対して、リスペクトと感謝が必要です。',
-                  },
-                ].map((r) => (
+                {data.requirements.items.map((r) => (
                   <div key={r.title} className="requirement-item">
                     <strong>{r.title}</strong>
                     <p>{r.desc}</p>
@@ -749,17 +564,15 @@ export default function AuditionClient() {
           <section className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">Conditions</div>
+                <div className="section-label">{data.conditions.label}</div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    合格後の条件と、
+                    {data.conditions.titleLine1}
                     <br />
-                    活動イメージについて。
+                    {data.conditions.titleLine2}
                   </span>
                 </h2>
-                <p className="section-note">
-                  寮も送迎も会社が支える。アイドルとしての活動に、安心して全力を注げる環境を用意しています。
-                </p>
+                <p className="section-note">{data.conditions.note}</p>
               </div>
               <div className="conditions-table">
                 <table>
@@ -772,46 +585,14 @@ export default function AuditionClient() {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>寮</td>
-                      <td>100%会社負担</td>
-                      <td>100%会社負担</td>
-                      <td>{'寮から卒業し、\n一人暮らしするメンバーもいます'}</td>
-                    </tr>
-                    <tr>
-                      <td>送迎</td>
-                      <td>レッスン場所までは自身で通勤</td>
-                      <td>イベント時は完全送迎</td>
-                      <td>イベント時は完全送迎</td>
-                    </tr>
-                    <tr>
-                      <td>休日</td>
-                      <td>
-                        {
-                          '不定期となります。\nおおよそ月に16日程度活動日ですが、\n活動日以外にTikTokライブや、個人練習をするメンバーも多いです。'
-                        }
-                      </td>
-                      <td>
-                        <span className="ditto-desktop">同左</span>
-                        <span className="ditto-mobile">同上</span>
-                      </td>
-                      <td>
-                        <span className="ditto-desktop">同左</span>
-                        <span className="ditto-mobile">同上</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>確定申告</td>
-                      <td>{'弊社で税理士ご紹介可能です。\n所属メンバーの8割が利用しています。'}</td>
-                      <td>
-                        <span className="ditto-desktop">同左</span>
-                        <span className="ditto-mobile">同上</span>
-                      </td>
-                      <td>
-                        <span className="ditto-desktop">同左</span>
-                        <span className="ditto-mobile">同上</span>
-                      </td>
-                    </tr>
+                    {data.conditions.rows.map((row) => (
+                      <tr key={row.category}>
+                        <td>{row.category}</td>
+                        <td>{renderConditionCell(row.beforeDebut)}</td>
+                        <td>{renderConditionCell(row.afterDebut)}</td>
+                        <td>{renderConditionCell(row.oneYear)}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -822,36 +603,17 @@ export default function AuditionClient() {
           <section id="faq" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">FAQ</div>
+                <div className="section-label">{data.faq.label}</div>
                 <h2 className="section-title title-reveal">
-                  <span>よくある質問</span>
+                  <span>{data.faq.title}</span>
                 </h2>
-                <p className="section-note">
-                  応募前に気になる、契約・費用・デビュー・生活のこと。あなたの不安に、ひとつずつお答えします。
-                </p>
+                <p className="section-note">{data.faq.note}</p>
               </div>
               <div className="faq-grid">
-                {[
-                  {
-                    q: 'Q. 「契約期間3年」ですが、契約期間満了後が不安です。',
-                    a: '契約期間は3年ですが、もちろん更新をしてアイドル活動を続けることは可能です。また「アイドル活動」から卒業した過去の卒業生の中には弊社が支援して、「自身のプロデュースしたグループのマネジメント」や「メンズコンカフェ」をオープンした方もいます。セカンドキャリアも支援可能です！',
-                  },
-                  {
-                    q: 'Q. 合格後、レッスン費用などの「自己負担」となる費用はありますか？',
-                    a: '基本的な自己負担は一切ございません。レッスン会場、打ち合わせのために事務所までの交通費は自己負担となりますが、東京への移動費などは会社負担となりますのでご安心ください。',
-                  },
-                  {
-                    q: 'Q. 他のプロダクションでは合格したけどデビューできないこともよく聞きます。',
-                    a: '弊社は、まだ小さなプロダクションです。そのため、練習生を集めることはなく、全員デビューすることを前提で合格通知を出させていただいております。過去のデビューまでの割合は100%です。',
-                  },
-                  {
-                    q: 'Q. 初めて親元を離れる生活が不安です。',
-                    a: 'これからデビューの皆さんは20歳前後の方が多いです。そのため、弊社のメンバーはほとんどが初めて親元を離れた生活を送っています。生活の仕方や大阪での遊び方なども含めて皆さんに指導し、趣味を見つけることや行ってはいけない場所も含めてマネジメントいたします。',
-                  },
-                ].map((faq) => (
-                  <article key={faq.q} className="faq-item">
-                    <div className="faq-question">{faq.q}</div>
-                    <div className="faq-answer">{faq.a}</div>
+                {data.faq.items.map((faq) => (
+                  <article key={faq.question} className="faq-item">
+                    <div className="faq-question">{faq.question}</div>
+                    <div className="faq-answer">{faq.answer}</div>
                   </article>
                 ))}
               </div>
@@ -862,24 +624,21 @@ export default function AuditionClient() {
           <section id="entry" className="cta section">
             <div className="container">
               <div className="cta-wrap parallax magnetic" data-speed="0.08">
-                <div className="cta-label">Entry</div>
+                <div className="cta-label">{data.cta.label}</div>
                 <h2 className="cta-title serif title-reveal">
                   <span>
-                    夢を現実へ変える一歩を、
+                    {data.cta.titleLine1}
                     <br />
-                    ここから。
+                    {data.cta.titleLine2}
                   </span>
                 </h2>
-                <p>
-                  未経験でも構いません。必要なのは、行動し続ける意志。Cinderella entertainment
-                  とともに、夢を現実へ変えていく最初の一歩を踏み出してください。
-                </p>
+                <p>{data.cta.desc}</p>
                 <div className="cta-actions">
-                  <a href="https://forms.gle/" className="pill pill-solid">
-                    エントリーフォームへ
+                  <a href={data.cta.primaryHref} className="pill pill-solid">
+                    {data.cta.primaryLabel}
                   </a>
-                  <a href="#tracks" className="pill pill-outline">
-                    実績をもう一度見る
+                  <a href={data.cta.secondaryHref} className="pill pill-outline">
+                    {data.cta.secondaryLabel}
                   </a>
                 </div>
               </div>

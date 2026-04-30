@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import { getAuditionData } from '@/lib/audition-data'
+
 import AuditionClient from './AuditionClient'
 
 const TITLE = 'メンズアイドル新メンバー募集 | Cinderella entertainment'
@@ -35,6 +37,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function AuditionPage() {
-  return <AuditionClient />
+export default async function AuditionPage() {
+  const data = await getAuditionData()
+  return <AuditionClient data={data} />
 }

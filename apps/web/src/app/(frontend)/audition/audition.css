@@ -196,7 +196,7 @@
       rgba(5, 5, 5, 0.12) 46%,
       rgba(5, 5, 5, 0.72) 100%
     ),
-    url('/audition/assets/hero-fv.jpg') center center / cover no-repeat;
+    var(--hero-image) center center / cover no-repeat;
   transform: scale(1.02) translate3d(0, 0, 0);
   transform-origin: center center;
   will-change: transform;
@@ -408,7 +408,7 @@
   min-height: 420px;
   background:
     linear-gradient(180deg, rgba(5, 5, 5, 0.08), rgba(5, 5, 5, 0.42)),
-    url('/audition/assets/audition-2027-announcement.jpg') center center / cover no-repeat;
+    var(--feature-image) center center / cover no-repeat;
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
@@ -1285,7 +1285,7 @@
         rgba(5, 5, 5, 0.82) 100%
       ),
       linear-gradient(90deg, rgba(5, 5, 5, 0.84), rgba(5, 5, 5, 0.18) 60%, rgba(5, 5, 5, 0.62)),
-      url('/audition/assets/hero-fv.jpg') 62% center / cover no-repeat;
+      var(--hero-image) 62% center / cover no-repeat;
   }
 
   .hero-grid {
@@ -1522,7 +1522,7 @@
   background:
     linear-gradient(180deg, rgba(5, 5, 5, 0.08), rgba(5, 5, 5, 0.58)),
     linear-gradient(120deg, rgba(214, 179, 122, 0.14), transparent 44%),
-    url('/audition/assets/live-stage.jpg') center 28% / cover no-repeat;
+    var(--lumi-image, url('/audition/assets/live-stage.jpg')) center 28% / cover no-repeat;
 }
 
 .nav-toggle {
