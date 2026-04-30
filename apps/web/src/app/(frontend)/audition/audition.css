@@ -1282,6 +1282,20 @@
 
   .hero h1 {
     max-width: 100%;
+    font-size: clamp(32px, 7.4vw, 56px);
+  }
+
+  .hero-title-line {
+    white-space: normal;
+  }
+
+  .hero-audition {
+    font-size: clamp(38px, 9vw, 80px);
+  }
+
+  .hero-lead {
+    font-size: 14px;
+    line-height: 1.85;
   }
 
   .platform-logos,
