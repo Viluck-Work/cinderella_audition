@@ -694,14 +694,26 @@ export default function AuditionClient() {
                           '不定期となります。\nおおよそ月に16日程度活動日ですが、\n活動日以外にTikTokライブや、個人練習をするメンバーも多いです。'
                         }
                       </td>
-                      <td>同左</td>
-                      <td>同左</td>
+                      <td>
+                        <span className="ditto-desktop">同左</span>
+                        <span className="ditto-mobile">同上</span>
+                      </td>
+                      <td>
+                        <span className="ditto-desktop">同左</span>
+                        <span className="ditto-mobile">同上</span>
+                      </td>
                     </tr>
                     <tr>
                       <td>確定申告</td>
                       <td>{'弊社で税理士ご紹介可能です。\n所属メンバーの8割が利用しています。'}</td>
-                      <td>同左</td>
-                      <td>同左</td>
+                      <td>
+                        <span className="ditto-desktop">同左</span>
+                        <span className="ditto-mobile">同上</span>
+                      </td>
+                      <td>
+                        <span className="ditto-desktop">同左</span>
+                        <span className="ditto-mobile">同上</span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
