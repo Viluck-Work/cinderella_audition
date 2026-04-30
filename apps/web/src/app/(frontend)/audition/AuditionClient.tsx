@@ -9,7 +9,7 @@ const MV_LIST = [
     id: 'Cg2UF5GqJzw',
     kicker: 'MV 01',
     title: 'ライブの熱量をそのまま映像へ',
-    desc: 'グループの勢いとステージの説得力が、そのまま伝わるMVとして実績欄に配置。',
+    desc: 'ステージで爆発する熱量と、ファンと一体になる瞬間。あなたもこの景色の真ん中に立てる。',
     href: 'https://www.youtube.com/watch?v=Cg2UF5GqJzw',
   },
   {
@@ -17,21 +17,21 @@ const MV_LIST = [
     start: '1',
     kicker: 'MV 02',
     title: '世界観づくりまで見える映像展開',
-    desc: '配信やライブだけでなく、ビジュアル表現の広がりも伝わる導線として追加しています。',
+    desc: '楽曲の世界観を映像で表現する。歌って踊るだけじゃない、表現者としての可能性が広がる。',
     href: 'https://www.youtube.com/watch?v=CT8IMsUV9nM&t=1s',
   },
   {
     id: 'WikZL9akqh0',
     kicker: 'MV 03',
     title: '推せる理由が映像でも積み上がる',
-    desc: '初見のユーザーにも、グループの空気感と完成度がひと目で伝わるカード構成にしました。',
+    desc: '初めて見た人さえ惹き込む、グループならではの空気感。あなたが加わる未来の物語が、ここから始まる。',
     href: 'https://www.youtube.com/watch?v=WikZL9akqh0',
   },
   {
     id: 'T162bkpr_5E',
     kicker: 'MV 04',
     title: '既存実績の厚みを一画面で見せる',
-    desc: 'MVが複数本あること自体を強い実績として扱い、応募者の期待値を上げる見せ方にしています。',
+    desc: '一本だけじゃない、何作も残せる場所。アーティストとしての軌跡を、ここで積み上げていける。',
     href: 'https://www.youtube.com/watch?v=T162bkpr_5E',
   },
 ]
@@ -219,8 +219,7 @@ export default function AuditionClient() {
                   </span>
                 </h2>
                 <p className="section-note">
-                  Cinderella entertainment
-                  は、メンバーの自主性を大切にしながら、楽曲、映像、SNS、ライブの全接点で「選ばれる理由」をつくるプロダクションです。
+                  未経験から、確かに応援される存在へ。あなたの個性と本気を、楽曲・映像・ライブのすべての舞台で輝かせます。
                 </p>
               </div>
               <div className="intro-grid">
@@ -287,8 +286,7 @@ export default function AuditionClient() {
                   </span>
                 </h2>
                 <p className="section-note">
-                  楽曲はストリーミングだけで終わらず、MV、カラオケ、放送、店内施策へと広がっていく。見つかる導線を複数持つことが、Cinderella
-                  entertainment の強みです。
+                  あなたの歌声と姿は、ストリーミング、MV、カラオケ、街中のBGMまで届く。多くの人と出会えるステージが、ここにあります。
                 </p>
               </div>
 
@@ -363,7 +361,7 @@ export default function AuditionClient() {
                     </span>
                   </h3>
                   <p className="section-note">
-                    音だけではなく、世界観と表現の密度まで可視化する。主なMVの蓄積が、そのままグループの完成度と伸びしろの証明になります。
+                    歌だけじゃない、表情も世界観もすべてが作品になる。あなたの魅力を全方位から伝えるMVを、ここで残していけます。
                   </p>
                 </div>
                 <div className="mv-grid">
@@ -615,7 +613,7 @@ export default function AuditionClient() {
                   <span>弊社で求めるアイドルの人物像</span>
                 </h2>
                 <p className="section-note">
-                  合格基準から人物像まで、弊社が大切にしている考え方をそのまま記載しています。
+                  経験よりも、まっすぐな気持ちと素直さ。ファンを大切にできる人と、長く一緒に走っていきたい。
                 </p>
               </div>
               <div className="requirements-section">
@@ -663,7 +661,7 @@ export default function AuditionClient() {
                   </span>
                 </h2>
                 <p className="section-note">
-                  報酬、寮、送迎、休日、確定申告など、活動開始後の条件を一覧で整理しています。
+                  寮も送迎も会社が支える。アイドルとしての活動に、安心して全力を注げる環境を用意しています。
                 </p>
               </div>
               <div className="conditions-table">
@@ -720,7 +718,7 @@ export default function AuditionClient() {
                   <span>よくある質問</span>
                 </h2>
                 <p className="section-note">
-                  契約、費用、デビュー、生活面について、よくいただく質問をまとめています。
+                  応募前に気になる、契約・費用・デビュー・生活のこと。あなたの不安に、ひとつずつお答えします。
                 </p>
               </div>
               <div className="faq-grid">
@@ -793,7 +791,9 @@ export default function AuditionClient() {
               />
             </div>
             <div className="footer-links">
-              <span>会社概要</span>
+              <a href="https://cin-dere-lla.com/" target="_blank" rel="noopener noreferrer">
+                会社概要
+              </a>
               <span>プライバシーポリシー</span>
               <span>お問い合わせ</span>
             </div>

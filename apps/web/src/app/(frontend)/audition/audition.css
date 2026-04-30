@@ -1042,14 +1042,12 @@
 }
 
 .conditions-table {
-  overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow);
 }
 
 .conditions-table table {
   width: 100%;
-  min-width: 860px;
   border-collapse: collapse;
 }
 
@@ -1352,6 +1350,68 @@
 
   .cta-wrap {
     padding: 30px 24px;
+  }
+
+  .conditions-table {
+    border: none;
+    box-shadow: none;
+    display: grid;
+    gap: 14px;
+  }
+
+  .conditions-table table,
+  .conditions-table tbody,
+  .conditions-table tr,
+  .conditions-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .conditions-table thead {
+    display: none;
+  }
+
+  .conditions-table tr {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(11, 11, 13, 0.94);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .conditions-table td {
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 18px;
+  }
+
+  .conditions-table tbody td:first-child {
+    background: rgba(18, 18, 20, 0.98);
+    border-top: none;
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .conditions-table tbody td:not(:first-child)::before {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .conditions-table tbody td:nth-child(2)::before {
+    content: 'デビュー前';
+  }
+
+  .conditions-table tbody td:nth-child(3)::before {
+    content: 'デビュー直後';
+  }
+
+  .conditions-table tbody td:nth-child(4)::before {
+    content: '1年後のイメージ';
   }
 }
 
