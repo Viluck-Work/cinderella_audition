@@ -10,7 +10,8 @@
     "type-check": "turbo run type-check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "share:preview": "node scripts/share-preview.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",

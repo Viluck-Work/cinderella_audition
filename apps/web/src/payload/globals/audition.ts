@@ -27,6 +27,15 @@ export const Audition: GlobalConfig = {
   },
   fields: [
     {
+      name: 'sharePreviewUrl',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/payload/components/SharePreviewURL',
+        },
+      },
+    },
+    {
       name: 'media',
       type: 'group',
       label: '画像',
