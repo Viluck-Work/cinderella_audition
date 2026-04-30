@@ -1463,6 +1463,7 @@
   .hero-meta {
     grid-template-columns: 1fr;
     gap: 10px;
+    max-width: 70%;
   }
 
   .hero-stat {

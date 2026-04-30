@@ -148,7 +148,7 @@ export default function AuditionClient() {
             <div className="hero-media parallax" data-speed="0.18" aria-hidden="true" />
             <div className="container hero-grid">
               <div className="hero-copy parallax" data-speed="0.1">
-                <div className="eyebrow">Cinderella entertainment audition 2026</div>
+                <div className="eyebrow">Cinderella entertainment audition</div>
                 <div className="hero-audition serif">Audition</div>
                 <h1>
                   <span className="hero-title-line">
