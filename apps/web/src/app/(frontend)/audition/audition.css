@@ -956,17 +956,42 @@
 
 .flow {
   display: grid;
-  gap: 12px;
+  gap: 28px;
+  position: relative;
 }
 
 .flow-step {
   display: grid;
   grid-template-columns: 116px 1fr;
   gap: 1px;
-  overflow: hidden;
+  position: relative;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: none;
+}
+
+.flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 57px;
+  top: calc(100% + 1px);
+  width: 2px;
+  height: 28px;
+  background: linear-gradient(180deg, rgba(214, 179, 122, 0.85), rgba(214, 179, 122, 0.15));
+  z-index: 2;
+}
+
+.flow-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 51px;
+  top: calc(100% + 25px);
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(214, 179, 122, 0.85);
+  background: var(--bg);
+  z-index: 3;
 }
 
 .step-index,
@@ -982,7 +1007,8 @@
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--gold);
+  font-weight: 600;
 }
 
 .step-body h3 {
@@ -1314,6 +1340,14 @@
 
   .step-index {
     justify-content: start;
+  }
+
+  .flow-step:not(:last-child)::after {
+    left: 27px;
+  }
+
+  .flow-step:not(:last-child)::before {
+    left: 21px;
   }
 
   .cta-wrap {
