@@ -15,7 +15,7 @@
 }
 
 .audition-root {
-  background: linear-gradient(180deg, #050505 0%, #090909 24%, #111111 48%, #070707 100%);
+  background: var(--bg);
   color: var(--text);
   font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Times New Roman', Georgia, serif;
   line-height: 1.6;

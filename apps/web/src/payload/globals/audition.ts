@@ -3,6 +3,7 @@ import type { GlobalConfig } from 'payload'
 import {
   AUDITION_DEFAULTS as D,
   DEFAULT_ACCENT_COLOR,
+  DEFAULT_BACKGROUND_COLOR,
   DEFAULT_PRIMARY_COLOR,
 } from '@/lib/audition-defaults'
 
@@ -64,6 +65,17 @@ export const Audition: GlobalConfig = {
           type: 'text',
           label: 'サブカラー（赤系のアクセント）',
           defaultValue: DEFAULT_ACCENT_COLOR,
+          admin: {
+            components: {
+              Field: '@/payload/components/ColorField',
+            },
+          },
+        },
+        {
+          name: 'backgroundColor',
+          type: 'text',
+          label: '背景ベースカラー',
+          defaultValue: DEFAULT_BACKGROUND_COLOR,
           admin: {
             components: {
               Field: '@/payload/components/ColorField',

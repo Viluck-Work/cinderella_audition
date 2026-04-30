@@ -120,6 +120,7 @@ export default function AuditionClient({ data: initialData }: Props) {
   const themeVar = {
     '--gold': data.theme.primaryColor,
     '--accent': data.theme.accentColor,
+    '--bg': data.theme.backgroundColor,
   } as React.CSSProperties
   const heroVar = { '--hero-image': `url('${data.media.heroImage}')` } as React.CSSProperties
   const featureVar = {

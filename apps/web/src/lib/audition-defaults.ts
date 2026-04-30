@@ -1,10 +1,12 @@
 export const DEFAULT_PRIMARY_COLOR = '#d6b37a'
 export const DEFAULT_ACCENT_COLOR = '#df2f39'
+export const DEFAULT_BACKGROUND_COLOR = '#050505'
 
 export type AuditionData = {
   theme: {
     primaryColor: string
     accentColor: string
+    backgroundColor: string
   }
   media: {
     heroImage: string
@@ -131,6 +133,7 @@ export const AUDITION_DEFAULTS: AuditionData = {
   theme: {
     primaryColor: DEFAULT_PRIMARY_COLOR,
     accentColor: DEFAULT_ACCENT_COLOR,
+    backgroundColor: DEFAULT_BACKGROUND_COLOR,
   },
   media: {
     heroImage: '/audition/assets/hero-fv.jpg',

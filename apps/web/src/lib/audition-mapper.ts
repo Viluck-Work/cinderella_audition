@@ -59,6 +59,7 @@ export function mapAuditionData(raw: unknown): AuditionData {
     theme: {
       primaryColor: pick(r.theme?.primaryColor, D.theme.primaryColor),
       accentColor: pick(r.theme?.accentColor, D.theme.accentColor),
+      backgroundColor: pick(r.theme?.backgroundColor, D.theme.backgroundColor),
     },
     media: {
       heroImage: resolveMedia(r.media?.heroImage, D.media.heroImage),
