@@ -88,7 +88,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(8, 8, 10, 0.76);
+  background: var(--card-translucent-strong);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -288,7 +288,7 @@
 .hero-stat {
   min-height: 104px;
   padding: 18px;
-  background: rgba(10, 10, 12, 0.6);
+  background: var(--card-translucent);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   transition:
@@ -446,7 +446,7 @@
 }
 
 .score {
-  background: rgba(13, 13, 15, 0.88);
+  background: var(--card);
   padding: 24px;
   min-height: 146px;
 }
@@ -489,7 +489,7 @@
 .requirement-item,
 .faq-item,
 .cta-wrap {
-  background: rgba(13, 13, 15, 0.84);
+  background: var(--card);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow);
 }
@@ -619,7 +619,7 @@
 
 .mv-card {
   overflow: hidden;
-  background: rgba(13, 13, 15, 0.9);
+  background: var(--card);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow);
   transition:
@@ -1009,7 +1009,7 @@
 
 .step-index,
 .step-body {
-  background: rgba(13, 13, 15, 0.96);
+  background: var(--card-strong);
   padding: 20px;
 }
 
@@ -1083,7 +1083,7 @@
 }
 
 .conditions-table thead th {
-  background: rgba(18, 18, 20, 0.98);
+  background: var(--card-deep);
   font-size: 13px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1091,7 +1091,7 @@
 }
 
 .conditions-table tbody td {
-  background: rgba(11, 11, 13, 0.94);
+  background: var(--card-strong);
   font-size: 15px;
   line-height: 1.85;
   color: var(--muted);
@@ -1150,8 +1150,7 @@
   padding: 42px;
   background:
     linear-gradient(120deg, rgba(223, 47, 57, 0.13), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)),
-    rgba(13, 13, 15, 0.92);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)), var(--card);
 }
 
 .cta-wrap::after {
@@ -1404,7 +1403,7 @@
 
   .conditions-table tr {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(11, 11, 13, 0.94);
+    background: var(--card-strong);
     box-shadow: var(--shadow);
     overflow: hidden;
   }
@@ -1416,7 +1415,7 @@
   }
 
   .conditions-table tbody td:first-child {
-    background: rgba(18, 18, 20, 0.98);
+    background: var(--card-deep);
     border-top: none;
     color: var(--gold);
     font-size: 13px;
@@ -1622,7 +1621,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 92px 28px 32px;
-  background: rgba(10, 10, 12, 0.96);
+  background: var(--card-strong);
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   transform: translateX(100%);
   transition: transform 0.3s ease;

@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import type { AuditionData } from '@/lib/audition-defaults'
 import { mapAuditionData } from '@/lib/audition-mapper'
+import { buildThemeVars } from '@/lib/audition-theme'
 
 type Props = { data: AuditionData }
 
@@ -117,11 +118,11 @@ export default function AuditionClient({ data: initialData }: Props) {
     }
   }, [navOpen])
 
-  const themeVar = {
-    '--gold': data.theme.primaryColor,
-    '--accent': data.theme.accentColor,
-    '--bg': data.theme.backgroundColor,
-  } as React.CSSProperties
+  const themeVar = buildThemeVars(
+    data.theme.backgroundColor,
+    data.theme.primaryColor,
+    data.theme.accentColor,
+  ) as React.CSSProperties
   const heroVar = { '--hero-image': `url('${data.media.heroImage}')` } as React.CSSProperties
   const featureVar = {
     '--feature-image': `url('${data.media.featureImage}')`,
