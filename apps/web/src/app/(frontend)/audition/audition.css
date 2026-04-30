@@ -19,7 +19,7 @@
   color: var(--text);
   font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Times New Roman', Georgia, serif;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .audition-root img {

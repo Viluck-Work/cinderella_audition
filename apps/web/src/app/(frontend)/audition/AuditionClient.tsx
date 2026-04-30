@@ -785,9 +785,6 @@ export default function AuditionClient() {
                     実績をもう一度見る
                   </a>
                 </div>
-                <div className="cta-note">
-                  応募フォームURLは実際のURLに差し替えてご利用ください。
-                </div>
               </div>
             </div>
           </section>
