@@ -46,15 +46,29 @@ export const Audition: GlobalConfig = {
       label: 'カラーテーマ',
       admin: {
         description:
-          'ブランドカラーを変更できます。「デフォルトに戻す」ボタンで元の配色に戻せます。',
+          'サイト全体の配色を 3 色で管理します。一番面積が大きい色がメインカラー、強調や差し色がサブ／アクセントです。「デフォルトに戻す」ボタンで初期配色に戻せます。',
       },
       fields: [
         {
+          name: 'backgroundColor',
+          type: 'text',
+          label: 'メインカラー（ベース：面積の最も大きい色）',
+          defaultValue: DEFAULT_BACKGROUND_COLOR,
+          admin: {
+            description:
+              'サイト全体の地色。ここを変えるとカードの色も自動で連動して再計算されます。',
+            components: {
+              Field: '@/payload/components/ColorField',
+            },
+          },
+        },
+        {
           name: 'primaryColor',
           type: 'text',
-          label: 'メインカラー（ゴールド系の差し色）',
+          label: 'サブカラー（差し色：見出し・ボタン・ライン）',
           defaultValue: DEFAULT_PRIMARY_COLOR,
           admin: {
+            description: 'セクションラベル、強調文字、ボタンの差し色などに使われます。',
             components: {
               Field: '@/payload/components/ColorField',
             },
@@ -63,20 +77,10 @@ export const Audition: GlobalConfig = {
         {
           name: 'accentColor',
           type: 'text',
-          label: 'サブカラー（赤系のアクセント）',
+          label: 'アクセントカラー（強調・ハイライト）',
           defaultValue: DEFAULT_ACCENT_COLOR,
           admin: {
-            components: {
-              Field: '@/payload/components/ColorField',
-            },
-          },
-        },
-        {
-          name: 'backgroundColor',
-          type: 'text',
-          label: '背景ベースカラー',
-          defaultValue: DEFAULT_BACKGROUND_COLOR,
-          admin: {
+            description: 'CTA エリアのグロー、注意喚起などに使われる差し色。',
             components: {
               Field: '@/payload/components/ColorField',
             },
