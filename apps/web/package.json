@@ -20,7 +20,6 @@
     "@repo/tailwind-config": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tailwindcss/typography": "^0.5.19",
-    "localtunnel": "^2.0.2",
     "next": "^15.3.2",
     "payload": "^3.84.0",
     "react": "^19.1.0",
