@@ -424,6 +424,87 @@
   border-color: #1a1a1a;
 }
 
+/* インライン編集モード */
+.ase-inline-edit-btn {
+  background: #ffffff;
+  border: 1px solid #dad9d2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+.ase-inline-edit-btn:hover {
+  border-color: #1a1a1a;
+}
+.ase-inline-edit-btn.is-active {
+  background: #b85c00;
+  color: #ffffff;
+  border-color: #b85c00;
+}
+
+.ase-inline-edit-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 90;
+}
+.ase-inline-edit-popover {
+  position: fixed;
+  z-index: 100;
+  width: 340px;
+  max-width: calc(100vw - 16px);
+  background: #ffffff;
+  border: 1px solid #dad9d2;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+  padding: 16px;
+  font-family: inherit;
+}
+.ase-inline-edit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.ase-inline-edit-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.ase-inline-edit-help {
+  font-size: 11px;
+  color: #6b6b6b;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.ase-inline-edit-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: #6b6b6b;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.ase-inline-edit-close:hover {
+  color: #1a1a1a;
+}
+.ase-inline-edit-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.ase-inline-edit-hint {
+  font-size: 11px;
+  color: #6b6b6b;
+}
+
 /* ============================================================
  * Responsive
  * ============================================================ */

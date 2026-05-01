@@ -132,15 +132,16 @@ export default function AuditionClient({ data: initialData }: Props) {
     }
   }, [navOpen])
 
-  // 親 (DetailEditClient) からの 'autosite-scroll' メッセージで指定アンカーへスクロール
+  // 親 (DetailEditClient) からのメッセージ:
+  // - 'autosite-scroll': 指定アンカーへスクロール
+  // - 'autosite-edit-mode': クリックで編集ポップアップを出すモード切替
+  const [editMode, setEditMode] = useState(false)
   useEffect(() => {
     const onMessage = (ev: MessageEvent) => {
       if (ev.origin !== window.location.origin) return
-      if (
-        ev.data &&
-        typeof ev.data === 'object' &&
-        (ev.data as { type?: unknown }).type === 'autosite-scroll'
-      ) {
+      if (!ev.data || typeof ev.data !== 'object') return
+      const type = (ev.data as { type?: unknown }).type
+      if (type === 'autosite-scroll') {
         const anchor = (ev.data as { anchor?: string }).anchor
         if (typeof anchor !== 'string') return
         if (anchor === '' || anchor === '#top') {
@@ -152,11 +153,44 @@ export default function AuditionClient({ data: initialData }: Props) {
         if (el instanceof HTMLElement) {
           el.scrollIntoView({ behavior: 'smooth', block: 'start' })
         }
+      } else if (type === 'autosite-edit-mode') {
+        setEditMode(Boolean((ev.data as { enabled?: boolean }).enabled))
       }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
   }, [])
+
+  // 編集モード時: data-edit-path を持つ要素のクリックを捕まえて親に通知
+  useEffect(() => {
+    if (!editMode) {
+      document.body.classList.remove('autosite-edit-mode')
+      return
+    }
+    document.body.classList.add('autosite-edit-mode')
+    const onClick = (ev: MouseEvent) => {
+      const target = (ev.target as HTMLElement | null)?.closest<HTMLElement>('[data-edit-path]')
+      if (!target) return
+      ev.preventDefault()
+      ev.stopPropagation()
+      const path = target.getAttribute('data-edit-path')
+      if (!path) return
+      const r = target.getBoundingClientRect()
+      window.parent?.postMessage(
+        {
+          type: 'autosite-edit-request',
+          path,
+          rect: { top: r.top, left: r.left, width: r.width, height: r.height },
+        },
+        window.location.origin,
+      )
+    }
+    document.addEventListener('click', onClick, true)
+    return () => {
+      document.removeEventListener('click', onClick, true)
+      document.body.classList.remove('autosite-edit-mode')
+    }
+  }, [editMode])
 
   const themeVar = buildThemeVars(
     data.theme.backgroundColor,
@@ -301,31 +335,62 @@ export default function AuditionClient({ data: initialData }: Props) {
             />
             <div className="container hero-grid">
               <div className="hero-copy parallax" data-speed="0.1">
-                <div className="eyebrow">{data.hero.eyebrow}</div>
-                <div className="hero-audition serif">{data.hero.audition}</div>
+                <div className="eyebrow" data-edit-path="hero.eyebrow">
+                  {data.hero.eyebrow}
+                </div>
+                <div className="hero-audition serif" data-edit-path="hero.audition">
+                  {data.hero.audition}
+                </div>
                 <h1>
                   <span className="hero-title-line">
-                    {data.hero.titleLine1Prefix}
-                    <span className="hero-highlight">{data.hero.titleHighlight}</span>
-                    {data.hero.titleLine1Suffix}
+                    <span data-edit-path="hero.titleLine1Prefix">
+                      {data.hero.titleLine1Prefix}
+                    </span>
+                    <span className="hero-highlight" data-edit-path="hero.titleHighlight">
+                      {data.hero.titleHighlight}
+                    </span>
+                    <span data-edit-path="hero.titleLine1Suffix">
+                      {data.hero.titleLine1Suffix}
+                    </span>
                   </span>
-                  <span className="hero-title-line">{data.hero.titleLine2}</span>
+                  <span className="hero-title-line" data-edit-path="hero.titleLine2">
+                    {data.hero.titleLine2}
+                  </span>
                 </h1>
-                <p className="hero-lead">{data.hero.lead}</p>
+                <p className="hero-lead" data-edit-path="hero.lead">
+                  {data.hero.lead}
+                </p>
                 <div className="hero-meta">
-                  {data.hero.stats.map((stat) => (
+                  {data.hero.stats.map((stat, i) => (
                     <div key={stat.label} className="hero-stat magnetic">
-                      <div className="hero-stat-label">{stat.label}</div>
-                      <div className="hero-stat-value serif">{stat.value}</div>
-                      <div className="hero-stat-sub">{stat.sub}</div>
+                      <div className="hero-stat-label" data-edit-path={`hero.stats.${i}.label`}>
+                        {stat.label}
+                      </div>
+                      <div
+                        className="hero-stat-value serif"
+                        data-edit-path={`hero.stats.${i}.value`}
+                      >
+                        {stat.value}
+                      </div>
+                      <div className="hero-stat-sub" data-edit-path={`hero.stats.${i}.sub`}>
+                        {stat.sub}
+                      </div>
                     </div>
                   ))}
                 </div>
                 <div className="hero-actions">
-                  <a href={data.hero.primaryHref} className="pill pill-solid">
+                  <a
+                    href={data.hero.primaryHref}
+                    className="pill pill-solid"
+                    data-edit-path="hero.primaryLabel"
+                  >
                     {data.hero.primaryLabel}
                   </a>
-                  <a href={data.hero.secondaryHref} className="pill pill-outline">
+                  <a
+                    href={data.hero.secondaryHref}
+                    className="pill pill-outline"
+                    data-edit-path="hero.secondaryLabel"
+                  >
                     {data.hero.secondaryLabel}
                   </a>
                 </div>
