@@ -416,34 +416,6 @@
   gap: 12px;
   flex-shrink: 0;
 }
-.ase-preview-slider {
-  flex: 1;
-  appearance: none;
-  -webkit-appearance: none;
-  height: 4px;
-  border-radius: 2px;
-  background: #eae9e2;
-  cursor: pointer;
-  margin: 0;
-}
-.ase-preview-slider::-webkit-slider-thumb {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #1a1a1a;
-  cursor: pointer;
-  border: none;
-}
-.ase-preview-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #1a1a1a;
-  cursor: pointer;
-  border: none;
-}
 .ase-preview-width-input {
   display: flex;
   align-items: center;
@@ -464,6 +436,53 @@
 .ase-preview-width-input input:focus {
   outline: none;
   border-color: #1a1a1a;
+}
+.ase-preview-hint {
+  font-size: 11px;
+  color: #6b6b6b;
+}
+
+/* Drag handle wrapper */
+.ase-preview-frame-wrap {
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  align-self: center;
+  height: 100%;
+  min-height: 400px;
+  max-height: 100%;
+  transition: width 0.05s linear;
+}
+.ase-preview-frame-wrap.is-resizing {
+  transition: none;
+}
+.ase-preview-frame-wrap.is-resizing .ase-preview-frame {
+  transition: none;
+}
+
+.ase-resize-handle {
+  flex-shrink: 0;
+  width: 12px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: ew-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+.ase-resize-handle > span {
+  display: block;
+  width: 4px;
+  height: 48px;
+  background: #b5b5b0;
+  border-radius: 2px;
+  transition: background 0.15s ease;
+}
+.ase-resize-handle:hover > span,
+.ase-preview-frame-wrap.is-resizing .ase-resize-handle > span {
+  background: #1a1a1a;
 }
 
 @media (max-width: 1280px) {
