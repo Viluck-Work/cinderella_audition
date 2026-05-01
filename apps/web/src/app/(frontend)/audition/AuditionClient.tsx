@@ -415,20 +415,26 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="about" className="section intro-band">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.about.label}</div>
+                <div className="section-label" data-edit-path="about.label">
+                  {data.about.label}
+                </div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    {data.about.titleLine1}
+                    <span data-edit-path="about.titleLine1">{data.about.titleLine1}</span>
                     <br />
-                    {data.about.titleLine2}
+                    <span data-edit-path="about.titleLine2">{data.about.titleLine2}</span>
                   </span>
                 </h2>
-                <p className="section-note">{data.about.note}</p>
+                <p className="section-note" data-edit-path="about.note">
+                  {data.about.note}
+                </p>
               </div>
               <div className="intro-grid">
                 <div className="intro-copy about-copy reveal" data-reveal="left">
                   {data.about.paragraphs.map((p, i) => (
-                    <p key={i}>{p}</p>
+                    <p key={i} data-edit-path={`about.paragraphs.${i}.text`}>
+                      {p}
+                    </p>
                   ))}
                 </div>
                 <div
@@ -436,11 +442,16 @@ export default function AuditionClient({ data: initialData }: Props) {
                   data-reveal="right"
                   aria-label="主要指標"
                 >
-                  {data.about.scoreboard.map((s) => (
+                  {data.about.scoreboard.map((s, i) => (
                     <div key={s.label} className="score">
-                      <small>{s.label}</small>
-                      <strong className="serif">{s.value}</strong>
-                      <span>{s.desc}</span>
+                      <small data-edit-path={`about.scoreboard.${i}.label`}>{s.label}</small>
+                      <strong
+                        className="serif"
+                        data-edit-path={`about.scoreboard.${i}.value`}
+                      >
+                        {s.value}
+                      </strong>
+                      <span data-edit-path={`about.scoreboard.${i}.desc`}>{s.desc}</span>
                     </div>
                   ))}
                 </div>
@@ -452,30 +463,38 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="tracks" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.tracks.label}</div>
+                <div className="section-label" data-edit-path="tracks.label">
+                  {data.tracks.label}
+                </div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    {data.tracks.titleLine1}
+                    <span data-edit-path="tracks.titleLine1">{data.tracks.titleLine1}</span>
                     <br />
-                    {data.tracks.titleLine2}
+                    <span data-edit-path="tracks.titleLine2">{data.tracks.titleLine2}</span>
                   </span>
                 </h2>
-                <p className="section-note">{data.tracks.note}</p>
+                <p className="section-note" data-edit-path="tracks.note">
+                  {data.tracks.note}
+                </p>
               </div>
 
               <div className="platform-grid">
                 <article className="platform-panel">
-                  <h3>{data.tracks.platformPanelTitle}</h3>
-                  <p>{data.tracks.platformPanelDesc}</p>
+                  <h3 data-edit-path="tracks.platformPanelTitle">
+                    {data.tracks.platformPanelTitle}
+                  </h3>
+                  <p data-edit-path="tracks.platformPanelDesc">
+                    {data.tracks.platformPanelDesc}
+                  </p>
                   <div className="platform-logos">
-                    {data.tracks.platforms.map((p) => (
+                    {data.tracks.platforms.map((p, i) => (
                       <div key={p.name} className="logo-chip reveal magnetic" data-reveal="zoom">
                         <div className="logo-icon">
                           <img src={p.iconPath} alt={p.name} />
                         </div>
                         <div className="logo-body">
-                          <strong>{p.name}</strong>
-                          <span>{p.desc}</span>
+                          <strong data-edit-path={`tracks.platforms.${i}.name`}>{p.name}</strong>
+                          <span data-edit-path={`tracks.platforms.${i}.desc`}>{p.desc}</span>
                         </div>
                       </div>
                     ))}
@@ -484,8 +503,8 @@ export default function AuditionClient({ data: initialData }: Props) {
 
                 <article className="dam-panel">
                   <div>
-                    <h3>{data.tracks.damPanelTitle}</h3>
-                    <p>{data.tracks.damPanelDesc}</p>
+                    <h3 data-edit-path="tracks.damPanelTitle">{data.tracks.damPanelTitle}</h3>
+                    <p data-edit-path="tracks.damPanelDesc">{data.tracks.damPanelDesc}</p>
                   </div>
                   <div className="dam-mark">
                     <img src="/audition/assets/dam.png" alt="DAM" />
@@ -496,21 +515,29 @@ export default function AuditionClient({ data: initialData }: Props) {
               {/* Music Videos */}
               <div className="mv-section">
                 <div className="mv-section-top section-top">
-                  <div className="section-label">{data.tracks.mvSectionLabel}</div>
+                  <div className="section-label" data-edit-path="tracks.mvSectionLabel">
+                    {data.tracks.mvSectionLabel}
+                  </div>
                   <h3
                     className="section-title title-reveal"
                     style={{ fontSize: 'clamp(26px, 3.5vw, 42px)' }}
                   >
                     <span>
-                      {data.tracks.mvSectionTitleLine1}
+                      <span data-edit-path="tracks.mvSectionTitleLine1">
+                        {data.tracks.mvSectionTitleLine1}
+                      </span>
                       <br />
-                      {data.tracks.mvSectionTitleLine2}
+                      <span data-edit-path="tracks.mvSectionTitleLine2">
+                        {data.tracks.mvSectionTitleLine2}
+                      </span>
                     </span>
                   </h3>
-                  <p className="section-note">{data.tracks.mvSectionNote}</p>
+                  <p className="section-note" data-edit-path="tracks.mvSectionNote">
+                    {data.tracks.mvSectionNote}
+                  </p>
                 </div>
                 <div className="mv-grid">
-                  {data.tracks.mvs.map((mv) => (
+                  {data.tracks.mvs.map((mv, i) => (
                     <article
                       key={mv.youtubeId}
                       className="mv-card reveal magnetic"
@@ -546,9 +573,13 @@ export default function AuditionClient({ data: initialData }: Props) {
                         </button>
                       )}
                       <div className="mv-copy">
-                        <div className="mv-kicker">{mv.kicker}</div>
-                        <div className="mv-title">{mv.title}</div>
-                        <p>{mv.desc}</p>
+                        <div className="mv-kicker" data-edit-path={`tracks.mvs.${i}.kicker`}>
+                          {mv.kicker}
+                        </div>
+                        <div className="mv-title" data-edit-path={`tracks.mvs.${i}.title`}>
+                          {mv.title}
+                        </div>
+                        <p data-edit-path={`tracks.mvs.${i}.desc`}>{mv.desc}</p>
                         <a
                           className="mv-link"
                           href={mv.href}
@@ -569,18 +600,22 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="groups" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.groups.label}</div>
+                <div className="section-label" data-edit-path="groups.label">
+                  {data.groups.label}
+                </div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    {data.groups.titleLine1}
+                    <span data-edit-path="groups.titleLine1">{data.groups.titleLine1}</span>
                     <br />
-                    {data.groups.titleLine2}
+                    <span data-edit-path="groups.titleLine2">{data.groups.titleLine2}</span>
                   </span>
                 </h2>
-                <p className="section-note">{data.groups.note}</p>
+                <p className="section-note" data-edit-path="groups.note">
+                  {data.groups.note}
+                </p>
               </div>
               <div className="group-list">
-                {data.groups.items.map((g) => (
+                {data.groups.items.map((g, i) => (
                   <article
                     key={g.name}
                     className="group-card magnetic reveal"
@@ -590,7 +625,9 @@ export default function AuditionClient({ data: initialData }: Props) {
                       className={`group-visual${g.visualVariant === 'lumi' ? ' group-visual-lumi' : ''}`}
                       style={g.visualVariant === 'lumi' ? lumiVar : undefined}
                     >
-                      <div className="group-badge">{g.badge}</div>
+                      <div className="group-badge" data-edit-path={`groups.items.${i}.badge`}>
+                        {g.badge}
+                      </div>
                       <div className="group-logo-wrap">
                         <div className="group-logo-panel">
                           <img src={g.logoPath} alt={g.logoAlt} />
@@ -599,11 +636,15 @@ export default function AuditionClient({ data: initialData }: Props) {
                     </div>
                     <div className="group-copy">
                       <div className="group-name">
-                        <strong className="serif">{g.name}</strong>
-                        <span>{g.nameKana}</span>
+                        <strong className="serif" data-edit-path={`groups.items.${i}.name`}>
+                          {g.name}
+                        </strong>
+                        <span data-edit-path={`groups.items.${i}.nameKana`}>{g.nameKana}</span>
                       </div>
-                      <div className="group-meta">{g.meta}</div>
-                      <p>{g.desc}</p>
+                      <div className="group-meta" data-edit-path={`groups.items.${i}.meta`}>
+                        {g.meta}
+                      </div>
+                      <p data-edit-path={`groups.items.${i}.desc`}>{g.desc}</p>
                       <ul className="detail-list">
                         {g.highlights.map((h) => (
                           <li key={h}>{h}</li>
@@ -620,22 +661,28 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="support" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.support.label}</div>
+                <div className="section-label" data-edit-path="support.label">
+                  {data.support.label}
+                </div>
                 <h2 className="section-title title-reveal">
-                  <span>{data.support.title}</span>
+                  <span data-edit-path="support.title">{data.support.title}</span>
                 </h2>
-                <p className="section-note">{data.support.note}</p>
+                <p className="section-note" data-edit-path="support.note">
+                  {data.support.note}
+                </p>
               </div>
               <div className="reasons">
-                {data.support.reasons.map((r) => (
+                {data.support.reasons.map((r, i) => (
                   <article
                     key={r.no}
                     className="reason-card magnetic reveal"
                     data-reveal={r.reveal}
                   >
-                    <div className="reason-no">{r.no}</div>
-                    <h3>{r.title}</h3>
-                    <p>{r.desc}</p>
+                    <div className="reason-no" data-edit-path={`support.reasons.${i}.no`}>
+                      {r.no}
+                    </div>
+                    <h3 data-edit-path={`support.reasons.${i}.title`}>{r.title}</h3>
+                    <p data-edit-path={`support.reasons.${i}.desc`}>{r.desc}</p>
                   </article>
                 ))}
               </div>
@@ -646,19 +693,25 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="flow" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.flow.label}</div>
+                <div className="section-label" data-edit-path="flow.label">
+                  {data.flow.label}
+                </div>
                 <h2 className="section-title title-reveal">
-                  <span>{data.flow.title}</span>
+                  <span data-edit-path="flow.title">{data.flow.title}</span>
                 </h2>
-                <p className="section-note">{data.flow.note}</p>
+                <p className="section-note" data-edit-path="flow.note">
+                  {data.flow.note}
+                </p>
               </div>
               <div className="flow">
-                {data.flow.steps.map((s) => (
+                {data.flow.steps.map((s, i) => (
                   <article key={s.step} className="flow-step">
-                    <div className="step-index">{s.step}</div>
+                    <div className="step-index" data-edit-path={`flow.steps.${i}.step`}>
+                      {s.step}
+                    </div>
                     <div className="step-body">
-                      <h3>{s.title}</h3>
-                      <p>{s.desc}</p>
+                      <h3 data-edit-path={`flow.steps.${i}.title`}>{s.title}</h3>
+                      <p data-edit-path={`flow.steps.${i}.desc`}>{s.desc}</p>
                     </div>
                   </article>
                 ))}
@@ -670,17 +723,21 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="requirements" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.requirements.label}</div>
+                <div className="section-label" data-edit-path="requirements.label">
+                  {data.requirements.label}
+                </div>
                 <h2 className="section-title title-reveal">
-                  <span>{data.requirements.title}</span>
+                  <span data-edit-path="requirements.title">{data.requirements.title}</span>
                 </h2>
-                <p className="section-note">{data.requirements.note}</p>
+                <p className="section-note" data-edit-path="requirements.note">
+                  {data.requirements.note}
+                </p>
               </div>
               <div className="requirements-section">
-                {data.requirements.items.map((r) => (
+                {data.requirements.items.map((r, i) => (
                   <div key={r.title} className="requirement-item">
-                    <strong>{r.title}</strong>
-                    <p>{r.desc}</p>
+                    <strong data-edit-path={`requirements.items.${i}.title`}>{r.title}</strong>
+                    <p data-edit-path={`requirements.items.${i}.desc`}>{r.desc}</p>
                   </div>
                 ))}
               </div>
@@ -691,15 +748,23 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.conditions.label}</div>
+                <div className="section-label" data-edit-path="conditions.label">
+                  {data.conditions.label}
+                </div>
                 <h2 className="section-title title-reveal">
                   <span>
-                    {data.conditions.titleLine1}
+                    <span data-edit-path="conditions.titleLine1">
+                      {data.conditions.titleLine1}
+                    </span>
                     <br />
-                    {data.conditions.titleLine2}
+                    <span data-edit-path="conditions.titleLine2">
+                      {data.conditions.titleLine2}
+                    </span>
                   </span>
                 </h2>
-                <p className="section-note">{data.conditions.note}</p>
+                <p className="section-note" data-edit-path="conditions.note">
+                  {data.conditions.note}
+                </p>
               </div>
               <div className="conditions-table">
                 <table>
@@ -712,12 +777,18 @@ export default function AuditionClient({ data: initialData }: Props) {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.conditions.rows.map((row) => (
+                    {data.conditions.rows.map((row, i) => (
                       <tr key={row.category}>
-                        <td>{row.category}</td>
-                        <td>{renderConditionCell(row.beforeDebut)}</td>
-                        <td>{renderConditionCell(row.afterDebut)}</td>
-                        <td>{renderConditionCell(row.oneYear)}</td>
+                        <td data-edit-path={`conditions.rows.${i}.category`}>{row.category}</td>
+                        <td data-edit-path={`conditions.rows.${i}.beforeDebut`}>
+                          {renderConditionCell(row.beforeDebut)}
+                        </td>
+                        <td data-edit-path={`conditions.rows.${i}.afterDebut`}>
+                          {renderConditionCell(row.afterDebut)}
+                        </td>
+                        <td data-edit-path={`conditions.rows.${i}.oneYear`}>
+                          {renderConditionCell(row.oneYear)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -730,17 +801,25 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="faq" className="section">
             <div className="container">
               <div className="section-top">
-                <div className="section-label">{data.faq.label}</div>
+                <div className="section-label" data-edit-path="faq.label">
+                  {data.faq.label}
+                </div>
                 <h2 className="section-title title-reveal">
-                  <span>{data.faq.title}</span>
+                  <span data-edit-path="faq.title">{data.faq.title}</span>
                 </h2>
-                <p className="section-note">{data.faq.note}</p>
+                <p className="section-note" data-edit-path="faq.note">
+                  {data.faq.note}
+                </p>
               </div>
               <div className="faq-grid">
-                {data.faq.items.map((faq) => (
+                {data.faq.items.map((faq, i) => (
                   <article key={faq.question} className="faq-item">
-                    <div className="faq-question">{faq.question}</div>
-                    <div className="faq-answer">{faq.answer}</div>
+                    <div className="faq-question" data-edit-path={`faq.items.${i}.question`}>
+                      {faq.question}
+                    </div>
+                    <div className="faq-answer" data-edit-path={`faq.items.${i}.answer`}>
+                      {faq.answer}
+                    </div>
                   </article>
                 ))}
               </div>
@@ -756,20 +835,30 @@ export default function AuditionClient({ data: initialData }: Props) {
           <section id="entry" className="cta section">
             <div className="container">
               <div className="cta-wrap parallax magnetic" data-speed="0.08">
-                <div className="cta-label">{data.cta.label}</div>
+                <div className="cta-label" data-edit-path="cta.label">
+                  {data.cta.label}
+                </div>
                 <h2 className="cta-title serif title-reveal">
                   <span>
-                    {data.cta.titleLine1}
+                    <span data-edit-path="cta.titleLine1">{data.cta.titleLine1}</span>
                     <br />
-                    {data.cta.titleLine2}
+                    <span data-edit-path="cta.titleLine2">{data.cta.titleLine2}</span>
                   </span>
                 </h2>
-                <p>{data.cta.desc}</p>
+                <p data-edit-path="cta.desc">{data.cta.desc}</p>
                 <div className="cta-actions">
-                  <a href={data.cta.primaryHref} className="pill pill-solid">
+                  <a
+                    href={data.cta.primaryHref}
+                    className="pill pill-solid"
+                    data-edit-path="cta.primaryLabel"
+                  >
                     {data.cta.primaryLabel}
                   </a>
-                  <a href={data.cta.secondaryHref} className="pill pill-outline">
+                  <a
+                    href={data.cta.secondaryHref}
+                    className="pill pill-outline"
+                    data-edit-path="cta.secondaryLabel"
+                  >
                     {data.cta.secondaryLabel}
                   </a>
                 </div>
