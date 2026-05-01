@@ -83,21 +83,59 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     setDevice('custom')
   }, [])
 
+  // ドラッグ中の DOM 直接更新用 ref
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const layoutRef = useRef<HTMLDivElement>(null)
+  const frameWrapRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
+
+  // 与えられた previewWidth / paneWidth で表示要素を直接更新する。
+  // React 再レンダリングを避けるため、ドラッグ中はこちらを使う。
+  // iframe の内部 width には触らない（中身の再レイアウトを回避）。
+  const applyDomSizes = useCallback(
+    (newPreviewWidth: number, newPaneWidth: number, committedIframeWidth: number) => {
+      const inner = Math.max(MIN_WIDTH, newPaneWidth - 48 - 24)
+      const scale = newPreviewWidth > inner ? inner / newPreviewWidth : 1
+      const visualW = newPreviewWidth * scale
+      const iframeScale = visualW / committedIframeWidth
+
+      if (layoutRef.current) {
+        layoutRef.current.style.gridTemplateColumns = `240px minmax(0, 1fr) 6px ${newPaneWidth}px`
+      }
+      if (frameWrapRef.current) {
+        frameWrapRef.current.style.width = `${visualW + 24}px`
+      }
+      if (frameRef.current) {
+        frameRef.current.style.width = `${visualW}px`
+      }
+      if (iframeRef.current) {
+        iframeRef.current.style.transform = `scale(${iframeScale})`
+        iframeRef.current.style.height = `${100 / iframeScale}%`
+      }
+    },
+    [],
+  )
+
   // ドラッグでプレビュー幅をリサイズ
   const [isResizing, setIsResizing] = useState(false)
   const startResize = useCallback(
     (clientX: number, side: 'left' | 'right') => {
       const startX = clientX
       const startWidth = previewWidth
+      const committedIframeWidth = previewWidth // ドラッグ中は iframe 内部はこの値で固定
       setIsResizing(true)
 
       let raf = 0
       let pendingCx = clientX
+      let lastApplied = startWidth
       const flush = () => {
         raf = 0
         const delta = pendingCx - startX
         const next = side === 'right' ? startWidth + delta * 2 : startWidth - delta * 2
-        setCustomWidth(Math.round(next / 2) * 2)
+        const clamped = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, Math.round(next / 2) * 2))
+        lastApplied = clamped
+        // React 再レンダリングなしで DOM 直接更新
+        applyDomSizes(clamped, paneWidth, committedIframeWidth)
       }
       const schedule = (cx: number) => {
         pendingCx = cx
@@ -111,6 +149,8 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       const cleanup = () => {
         if (raf) cancelAnimationFrame(raf)
         setIsResizing(false)
+        // ドラッグ終了時に1回だけ React state を確定 → iframe 内部 width を再設定
+        setCustomWidth(lastApplied)
         window.removeEventListener('mousemove', onMouseMove)
         window.removeEventListener('mouseup', cleanup)
         window.removeEventListener('touchmove', onTouchMove)
@@ -125,7 +165,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       document.body.style.userSelect = 'none'
       document.body.style.cursor = 'ew-resize'
     },
-    [previewWidth, setCustomWidth],
+    [previewWidth, paneWidth, applyDomSizes, setCustomWidth],
   )
 
   // 列の仕切り (editor / preview pane の境界) ドラッグ
@@ -133,17 +173,20 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     (clientX: number) => {
       const startX = clientX
       const startWidth = paneWidth
+      const committedIframeWidth = previewWidth
       setIsDraggingPane(true)
 
       let raf = 0
       let pendingCx = clientX
+      let lastApplied = startWidth
       const flush = () => {
         raf = 0
         const delta = startX - pendingCx
         const maxByViewport =
           typeof window !== 'undefined' ? Math.max(360, window.innerWidth - 280 - 240) : 1600
         const next = Math.max(360, Math.min(maxByViewport, startWidth + delta))
-        setPaneWidth(next)
+        lastApplied = next
+        applyDomSizes(previewWidth, next, committedIframeWidth)
       }
       const schedule = (cx: number) => {
         pendingCx = cx
@@ -157,6 +200,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       const cleanup = () => {
         if (raf) cancelAnimationFrame(raf)
         setIsDraggingPane(false)
+        setPaneWidth(lastApplied)
         window.removeEventListener('mousemove', onMouseMove)
         window.removeEventListener('mouseup', cleanup)
         window.removeEventListener('touchmove', onTouchMove)
@@ -171,7 +215,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       document.body.style.userSelect = 'none'
       document.body.style.cursor = 'ew-resize'
     },
-    [paneWidth],
+    [paneWidth, previewWidth, applyDomSizes],
   )
   const [displayPreset, setDisplayPreset] = useState<string>('standard')
   const [saving, setSaving] = useState(false)
@@ -216,7 +260,6 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
   // AuditionClient の useLivePreview フックが受け取ってマージ・再描画する。
   // postMessage の origin が hook の serverURL と一致する必要があるため、
   // 同一オリジン (NEXT_PUBLIC_SERVER_URL || window.location.origin) を使う。
-  const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeReadyRef = useRef(false)
   const sendTimer = useRef<number | null>(null)
 
@@ -283,6 +326,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       </header>
 
       <div
+        ref={layoutRef}
         className={`ase-layout${isDraggingPane ? ' is-dragging-pane' : ''}`}
         style={{ gridTemplateColumns: `240px minmax(0, 1fr) 6px ${paneWidth}px` }}
       >
@@ -466,6 +510,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
 
           <div className="ase-preview-body">
             <div
+              ref={frameWrapRef}
               className={`ase-preview-frame-wrap${isResizing ? ' is-resizing' : ''}`}
               style={{ width: visualPreviewWidth + HANDLE_WIDTH }}
             >
@@ -484,6 +529,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
                 <span />
               </button>
               <div
+                ref={frameRef}
                 className="ase-preview-frame"
                 style={{ width: visualPreviewWidth, position: 'relative', overflow: 'hidden' }}
               >
