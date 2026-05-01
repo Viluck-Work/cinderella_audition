@@ -436,23 +436,41 @@
   }
 }
 
-/* タブレット縦: 3 カラム → サイドバー + 編集 / プレビュー切替タブ */
+/* タブレット〜スマホ: サイドバーをドロワー化、編集/プレビューを1列で切り替え */
 @media (max-width: 1024px) {
   .ase-layout {
-    grid-template-columns: 220px minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    position: relative;
   }
   .ase-pane-divider {
     display: none;
   }
+  .ase-sidebar {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
+  }
+  .autosite-edit.is-sidebar-open .ase-sidebar {
+    transform: translateX(0);
+  }
   .ase-preview {
-    display: none; /* デフォルトでは非表示。プレビュータブで切り替え */
+    display: none; /* デフォルトでは非表示。トグルで切り替え */
   }
   .autosite-edit.is-preview-mode .ase-editor {
     display: none;
   }
   .autosite-edit.is-preview-mode .ase-preview {
     display: flex;
-    grid-column: 2 / 3;
+    grid-column: 1 / -1;
+  }
+  .ase-mobile-backdrop {
+    display: block;
   }
   /* モバイル/タブレット: プレビューを画面いっぱいにする */
   .autosite-edit.is-preview-mode .ase-preview-frame-wrap {
@@ -487,37 +505,36 @@
   .ase-mobile-nav {
     display: flex !important;
   }
+  /* TOP リンクは ☰ メニューがあるので隠す */
+  .ase-nav {
+    display: none;
+  }
 }
 
-/* スマホ: サイドバーをドロワー化 */
+/* スマホ: ヘッダーをコンパクトに */
 @media (max-width: 720px) {
-  .ase-layout {
-    grid-template-columns: minmax(0, 1fr) !important;
-    position: relative;
-  }
-  .ase-sidebar {
-    position: fixed;
-    top: 65px;
-    left: 0;
-    bottom: 0;
-    width: 260px;
-    z-index: 30;
-    transform: translateX(-100%);
-    transition: transform 0.2s ease;
-    box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
-  }
-  .autosite-edit.is-sidebar-open .ase-sidebar {
-    transform: translateX(0);
-  }
   .ase-header {
-    padding: 12px 16px;
-    gap: 8px;
+    padding: 10px 12px;
+    gap: 6px;
   }
   .ase-header-left {
-    gap: 12px;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
   }
-  .ase-company {
+  .ase-company,
+  .ase-nav,
+  .ase-btn-secondary span:not(.ase-btn-secondary > span:first-child) {
     display: none;
+  }
+  /* 'サイトを見る' を ↗ アイコンだけに */
+  .ase-header-right .ase-btn-secondary {
+    padding: 8px 10px;
+    font-size: 0;
+  }
+  .ase-header-right .ase-btn-secondary > span {
+    font-size: 14px;
+    opacity: 1;
   }
   .ase-editor-scroll {
     padding: 20px 16px;
@@ -527,9 +544,6 @@
   }
   .ase-save-bar {
     padding: 10px 12px;
-  }
-  .ase-mobile-backdrop {
-    display: block;
   }
 }
 
