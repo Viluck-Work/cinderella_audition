@@ -725,7 +725,9 @@ function ArrayField({
           <div key={i} className="ase-array-item">
             <div className="ase-array-item-head">
               <span className="ase-array-item-label">
-                {field.itemLabel ? field.itemLabel(i) : `${field.label} ${i + 1}`}
+                {field.itemLabelTemplate
+                  ? field.itemLabelTemplate.replace('{n}', String(i + 1))
+                  : `${field.label} ${i + 1}`}
               </span>
               <div className="ase-array-item-actions">
                 <button
