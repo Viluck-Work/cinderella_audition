@@ -76,6 +76,8 @@
   font-family: inherit;
   text-decoration: none;
   color: #1a1a1a;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ast-avatar {
   width: 32px;
