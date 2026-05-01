@@ -11,6 +11,8 @@ type Props = {
   activeSlug: string
   initialData: Record<string, unknown> | null
   companyName?: string
+  /** sections.ts のデフォルトラベルを上書きする CMS 由来のラベル */
+  sectionLabels?: Record<string, string>
 }
 
 type Device = 'pc' | 'tablet' | 'mobile' | 'custom'
@@ -86,11 +88,17 @@ export default function DetailEditClient({
   activeSlug,
   initialData,
   companyName = '株式会社サンプル様',
+  sectionLabels = {},
 }: Props) {
+  const labelOf = useCallback(
+    (slug: string, fallback: string): string => sectionLabels[slug] || fallback,
+    [sectionLabels],
+  )
   const activeSection = useMemo(
     () => sections.find((s) => s.slug === activeSlug) ?? sections[0],
     [sections, activeSlug],
   )
+  const activeSectionLabel = labelOf(activeSection.slug, activeSection.pageLabel)
 
   const [data, setData] = useState<Record<string, unknown>>(initialData ?? {})
   const baselineRef = useRef<Record<string, unknown>>(initialData ?? {})
@@ -388,7 +396,7 @@ export default function DetailEditClient({
                   href={`/admin/edit?section=${item.slug}`}
                 >
                   <span className="ase-sidebar-icon">{item.icon}</span>
-                  <span>{item.label}</span>
+                  <span>{labelOf(item.slug, item.label)}</span>
                 </Link>
               ))}
             </div>
@@ -400,9 +408,9 @@ export default function DetailEditClient({
           <div className="ase-editor-scroll">
             <div className="ase-editor-header">
               <div className="ase-breadcrumb">
-                トップページ / {activeSection.pageLabel}
+                トップページ / {activeSectionLabel}
               </div>
-              <h2 className="ase-editor-title">{activeSection.title}</h2>
+              <h2 className="ase-editor-title">{activeSectionLabel}</h2>
               <p className="ase-editor-desc">{activeSection.description}</p>
             </div>
 
