@@ -97,12 +97,42 @@
   font-size: 13px;
 }
 
-/* Layout */
+/* Layout — grid columns are set inline so the pane divider can resize them */
 .ase-layout {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) minmax(420px, 1.4fr);
   flex: 1;
   min-height: 0;
+}
+.ase-layout.is-dragging-pane,
+.ase-layout.is-dragging-pane * {
+  user-select: none;
+}
+
+/* 列の仕切り (editor / preview pane の境界) */
+.ase-pane-divider {
+  position: relative;
+  background: #eae9e2;
+  cursor: ew-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+.ase-pane-divider:hover,
+.ase-pane-divider.is-dragging {
+  background: #dad9d2;
+}
+.ase-pane-divider > span {
+  display: block;
+  width: 2px;
+  height: 64px;
+  background: #b5b5b0;
+  border-radius: 1px;
+  transition: background 0.15s ease;
+}
+.ase-pane-divider:hover > span,
+.ase-pane-divider.is-dragging > span {
+  background: #1a1a1a;
 }
 
 /* Sidebar */
