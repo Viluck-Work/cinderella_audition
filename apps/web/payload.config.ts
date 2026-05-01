@@ -35,6 +35,13 @@ export default buildConfig({
   editor: lexicalEditor(),
   admin: {
     user: 'users',
+    components: {
+      views: {
+        dashboard: {
+          Component: '@/payload/views/Dashboard',
+        },
+      },
+    },
   },
   collections: [Users, Media, Pages, Posts],
   globals: [SiteSettings, Navigation, Audition],
