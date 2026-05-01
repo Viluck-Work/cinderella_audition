@@ -381,17 +381,10 @@ export default function DetailEditClient({
             </button>
             <button
               type="button"
-              className={`ase-mobile-nav-btn${mobileMode === 'editor' ? ' is-active' : ''}`}
-              onClick={() => setMobileMode('editor')}
+              className="ase-mobile-nav-btn ase-mobile-nav-toggle"
+              onClick={() => setMobileMode((m) => (m === 'editor' ? 'preview' : 'editor'))}
             >
-              編集
-            </button>
-            <button
-              type="button"
-              className={`ase-mobile-nav-btn${mobileMode === 'preview' ? ' is-active' : ''}`}
-              onClick={() => setMobileMode('preview')}
-            >
-              プレビュー
+              {mobileMode === 'editor' ? 'プレビュー →' : '← 編集に戻る'}
             </button>
           </div>
         </div>
