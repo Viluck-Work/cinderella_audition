@@ -376,3 +376,41 @@
   text-decoration: none;
   color: #1a1a1a;
 }
+
+@media (max-width: 720px) {
+  .ast-header {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  .ast-header-left {
+    gap: 12px;
+  }
+  .ast-company {
+    display: none;
+  }
+  .ast-main {
+    padding: 24px 16px 60px;
+  }
+  .ast-page-title {
+    font-size: 22px;
+  }
+  .ast-page-desc {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .ast-steps {
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .ast-form-input-pair {
+    flex-direction: column;
+  }
+  .ast-button-row {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .ast-button-row .ast-btn-primary,
+  .ast-button-row .ast-btn-back {
+    width: 100%;
+  }
+}

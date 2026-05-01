@@ -314,4 +314,32 @@
   .ash-ai-stats {
     grid-template-columns: 1fr;
   }
+  .ash-header {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  .ash-header-left {
+    gap: 12px;
+  }
+  .ash-company {
+    display: none;
+  }
+  .ash-main {
+    padding: 24px 16px 60px;
+  }
+  .ash-greeting {
+    margin-bottom: 32px;
+  }
+  .ash-greeting h1 {
+    font-size: 22px;
+  }
+  .ash-section {
+    margin-bottom: 36px;
+  }
+  .ash-ai-card {
+    padding: 24px 20px;
+  }
+  .ash-ai-num {
+    font-size: 28px;
+  }
 }

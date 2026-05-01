@@ -10,9 +10,11 @@ export type FlatFieldDef = {
   help?: string
   /** Audition global の中の dot path （例: 'hero.titleLine2'） */
   path: string
-  kind: 'text' | 'textarea'
+  kind: 'text' | 'textarea' | 'color'
   /** 推奨文字数 */
   recommendedMax?: number
+  /** color の時に空欄を許容（自動算出など） */
+  allowEmpty?: boolean
 }
 
 export type ArrayFieldDef = {
@@ -67,10 +69,16 @@ export const SECTIONS: SectionDef[] = [
       {
         title: 'カラー',
         fields: [
-          { label: 'メインカラー（背景）', path: 'theme.backgroundColor', kind: 'text' },
-          { label: 'サブカラー（差し色）', path: 'theme.primaryColor', kind: 'text' },
-          { label: 'アクセントカラー', path: 'theme.accentColor', kind: 'text' },
-          { label: 'カード色（任意）', help: '空欄なら背景から自動算出', path: 'theme.cardColor', kind: 'text' },
+          { label: 'メインカラー（背景）', path: 'theme.backgroundColor', kind: 'color' },
+          { label: 'サブカラー（差し色）', path: 'theme.primaryColor', kind: 'color' },
+          { label: 'アクセントカラー', path: 'theme.accentColor', kind: 'color' },
+          {
+            label: 'カード色',
+            help: '空欄なら背景から自動算出',
+            path: 'theme.cardColor',
+            kind: 'color',
+            allowEmpty: true,
+          },
         ],
       },
     ],

@@ -370,6 +370,160 @@
   margin-bottom: 0;
 }
 
+/* Color picker */
+.ase-color-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ase-color-picker {
+  width: 44px;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid #dad9d2;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+}
+.ase-color-hex {
+  width: 130px;
+  font-family: 'SFMono-Regular', Menlo, monospace;
+  font-size: 13px;
+}
+.ase-color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #dad9d2;
+  flex-shrink: 0;
+}
+.ase-color-auto-badge {
+  font-size: 11px;
+  color: #6b6b6b;
+  font-style: italic;
+}
+.ase-color-clear {
+  background: #ffffff;
+  border: 1px solid #dad9d2;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #1a1a1a;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ase-color-clear:hover {
+  border-color: #1a1a1a;
+}
+
+/* ============================================================
+ * Responsive
+ * ============================================================ */
+
+/* タブレット〜中型ノート: プレビューパネル幅を縮める */
+@media (max-width: 1280px) {
+  .ase-layout {
+    /* inline style で grid-template-columns を上書きしているので、
+       ここでは preview pane を min-width で縛らないことを明示 */
+  }
+}
+
+/* タブレット縦: 3 カラム → サイドバー + 編集 / プレビュー切替タブ */
+@media (max-width: 1024px) {
+  .ase-layout {
+    grid-template-columns: 220px minmax(0, 1fr) !important;
+  }
+  .ase-pane-divider {
+    display: none;
+  }
+  .ase-preview {
+    display: none; /* デフォルトでは非表示。プレビュータブで切り替え */
+  }
+  .autosite-edit.is-preview-mode .ase-editor {
+    display: none;
+  }
+  .autosite-edit.is-preview-mode .ase-preview {
+    display: flex;
+    grid-column: 2 / 3;
+  }
+}
+
+/* スマホ: サイドバーをドロワー化 */
+@media (max-width: 720px) {
+  .ase-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    position: relative;
+  }
+  .ase-sidebar {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
+  }
+  .autosite-edit.is-sidebar-open .ase-sidebar {
+    transform: translateX(0);
+  }
+  .ase-header {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  .ase-header-left {
+    gap: 12px;
+  }
+  .ase-company {
+    display: none;
+  }
+  .ase-editor-scroll {
+    padding: 20px 16px;
+  }
+  .ase-field-group {
+    padding: 16px;
+  }
+  .ase-save-bar {
+    padding: 10px 12px;
+  }
+  .ase-mobile-nav {
+    display: flex !important;
+  }
+  .ase-mobile-backdrop {
+    display: block;
+  }
+}
+
+.ase-mobile-nav {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.ase-mobile-nav-btn {
+  background: #ffffff;
+  border: 1px solid #dad9d2;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #1a1a1a;
+}
+.ase-mobile-nav-btn.is-active {
+  background: #1a1a1a;
+  color: #ffffff;
+  border-color: #1a1a1a;
+}
+.ase-mobile-backdrop {
+  display: none;
+  position: fixed;
+  inset: 65px 0 0 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 20;
+}
+
 /* 表示の仕方 */
 .ase-display-options {
   display: grid;
