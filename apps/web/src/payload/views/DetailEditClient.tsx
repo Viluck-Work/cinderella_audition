@@ -384,7 +384,26 @@ export default function DetailEditClient({
           if (sub) return { ...sub, path }
         }
       }
-      return null
+      // 3. 入れ子配列など未定義のパスは合成して返す
+      // 例: groups.items.0.highlights.0.text → label='実績'
+      const segs = path.split('.')
+      const last = segs[segs.length - 1]
+      const knownLabels: Record<string, string> = {
+        highlights: '実績',
+        paragraphs: '段落',
+        text: '本文',
+        title: '見出し',
+        desc: '説明',
+        label: 'ラベル',
+        value: '値',
+        sub: '補足',
+      }
+      let label = knownLabels[last] || last
+      if (last === 'text' && segs.length >= 3) {
+        const arrName = segs[segs.length - 3]
+        if (knownLabels[arrName]) label = knownLabels[arrName]
+      }
+      return { label, path, kind: 'text' }
     },
     [fieldByPath],
   )
@@ -482,6 +501,18 @@ export default function DetailEditClient({
             >
               ☰
             </button>
+            {mobileMode === 'preview' && (
+              <button
+                type="button"
+                className={`ase-mobile-nav-btn ase-mobile-edit-toggle${inlineEditMode ? ' is-active' : ''}`}
+                onClick={() => {
+                  setInlineEditMode((v) => !v)
+                  if (inlineEditMode) setInlineEdit(null)
+                }}
+              >
+                {inlineEditMode ? '✓ 直接編集' : '✏ 直接編集'}
+              </button>
+            )}
             <button
               type="button"
               className="ase-mobile-nav-btn ase-mobile-nav-toggle"
