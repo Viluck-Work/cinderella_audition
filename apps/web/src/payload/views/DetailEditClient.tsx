@@ -106,6 +106,9 @@ export default function DetailEditClient({
   const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.pc)
   const [paneWidth, setPaneWidth] = useState<number>(720)
   const [isDraggingPane, setIsDraggingPane] = useState(false)
+  // モバイル: 編集 / プレビュー切替、サイドバードロワー
+  const [mobileMode, setMobileMode] = useState<'editor' | 'preview'>('editor')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const setDeviceAndWidth = useCallback((d: Exclude<Device, 'custom'>) => {
     setDevice(d)
@@ -353,7 +356,9 @@ export default function DetailEditClient({
   const previewUrl = '/audition'
 
   return (
-    <div className="autosite-edit">
+    <div
+      className={`autosite-edit${mobileMode === 'preview' ? ' is-preview-mode' : ''}${sidebarOpen ? ' is-sidebar-open' : ''}`}
+    >
       <header className="ase-header">
         <div className="ase-header-left">
           <Link href="/admin" className="ase-logo">
@@ -365,6 +370,30 @@ export default function DetailEditClient({
             </Link>
           </nav>
           <div className="ase-company">{companyName}</div>
+          <div className="ase-mobile-nav">
+            <button
+              type="button"
+              className="ase-mobile-nav-btn"
+              onClick={() => setSidebarOpen((v) => !v)}
+              aria-label="メニュー"
+            >
+              ☰
+            </button>
+            <button
+              type="button"
+              className={`ase-mobile-nav-btn${mobileMode === 'editor' ? ' is-active' : ''}`}
+              onClick={() => setMobileMode('editor')}
+            >
+              編集
+            </button>
+            <button
+              type="button"
+              className={`ase-mobile-nav-btn${mobileMode === 'preview' ? ' is-active' : ''}`}
+              onClick={() => setMobileMode('preview')}
+            >
+              プレビュー
+            </button>
+          </div>
         </div>
         <div className="ase-header-right">
           <a className="ase-btn-secondary" href={previewUrl} target="_blank" rel="noreferrer">
@@ -375,6 +404,13 @@ export default function DetailEditClient({
         </div>
       </header>
 
+      {sidebarOpen && (
+        <div
+          className="ase-mobile-backdrop"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
       <div
         ref={layoutRef}
         className={`ase-layout${isDraggingPane ? ' is-dragging-pane' : ''}`}
@@ -394,6 +430,7 @@ export default function DetailEditClient({
                   key={item.slug}
                   className={`ase-sidebar-item${item.slug === activeSlug ? ' is-active' : ''}`}
                   href={`/admin/edit?section=${item.slug}`}
+                  onClick={() => setSidebarOpen(false)}
                 >
                   <span className="ase-sidebar-icon">{item.icon}</span>
                   <span>{labelOf(item.slug, item.label)}</span>
@@ -649,6 +686,8 @@ function FieldRouter({
   )
 }
 
+const isValidHex = (v: string) => /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v)
+
 const FieldRow = React.memo(function FieldRow({
   field,
   value,
@@ -666,7 +705,9 @@ const FieldRow = React.memo(function FieldRow({
     <div className="ase-field">
       <label className="ase-field-label">{field.label}</label>
       {field.help && <div className="ase-field-help">{field.help}</div>}
-      {field.kind === 'textarea' ? (
+      {field.kind === 'color' ? (
+        <ColorInput value={value} onChange={onChange} allowEmpty={field.allowEmpty} />
+      ) : field.kind === 'textarea' ? (
         <textarea
           className="ase-input"
           rows={3}
@@ -689,6 +730,50 @@ const FieldRow = React.memo(function FieldRow({
     </div>
   )
 })
+
+function ColorInput({
+  value,
+  onChange,
+  allowEmpty,
+}: {
+  value: string
+  onChange: (v: string) => void
+  allowEmpty?: boolean
+}) {
+  const isEmpty = !value
+  const safe = isValidHex(value) ? value : '#888888'
+  return (
+    <div className="ase-color-row">
+      <input
+        type="color"
+        className="ase-color-picker"
+        value={safe}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label="カラーピッカー"
+      />
+      <input
+        type="text"
+        className="ase-input ase-color-hex"
+        value={value}
+        placeholder={allowEmpty ? '空欄で自動' : '#000000'}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      {isValidHex(value) && (
+        <span
+          className="ase-color-swatch"
+          aria-hidden="true"
+          style={{ background: value }}
+        />
+      )}
+      {isEmpty && allowEmpty && <span className="ase-color-auto-badge">自動</span>}
+      {allowEmpty && !isEmpty && (
+        <button type="button" className="ase-color-clear" onClick={() => onChange('')}>
+          自動に戻す
+        </button>
+      )}
+    </div>
+  )
+}
 
 function ArrayField({
   field,
