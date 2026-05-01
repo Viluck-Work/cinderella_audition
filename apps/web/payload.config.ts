@@ -45,6 +45,11 @@ export default buildConfig({
           path: '/edit',
           exact: false,
         },
+        tasks: {
+          Component: '@/payload/views/Tasks',
+          path: '/tasks',
+          exact: false,
+        },
       },
     },
   },
