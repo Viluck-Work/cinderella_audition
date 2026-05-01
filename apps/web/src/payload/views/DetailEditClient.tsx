@@ -91,18 +91,25 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       const startWidth = previewWidth
       setIsResizing(true)
 
-      const onMove = (cx: number) => {
-        const delta = cx - startX
-        // 中央寄せなのでハンドルからの delta はそのまま伸縮量に。
-        // 左ハンドルは左方向で広がる、右ハンドルは右方向で広がる。
+      let raf = 0
+      let pendingCx = clientX
+      const flush = () => {
+        raf = 0
+        const delta = pendingCx - startX
         const next = side === 'right' ? startWidth + delta * 2 : startWidth - delta * 2
         setCustomWidth(Math.round(next / 2) * 2)
       }
-      const onMouseMove = (ev: MouseEvent) => onMove(ev.clientX)
+      const schedule = (cx: number) => {
+        pendingCx = cx
+        if (raf) return
+        raf = requestAnimationFrame(flush)
+      }
+      const onMouseMove = (ev: MouseEvent) => schedule(ev.clientX)
       const onTouchMove = (ev: TouchEvent) => {
-        if (ev.touches[0]) onMove(ev.touches[0].clientX)
+        if (ev.touches[0]) schedule(ev.touches[0].clientX)
       }
       const cleanup = () => {
+        if (raf) cancelAnimationFrame(raf)
         setIsResizing(false)
         window.removeEventListener('mousemove', onMouseMove)
         window.removeEventListener('mouseup', cleanup)
@@ -128,19 +135,27 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       const startWidth = paneWidth
       setIsDraggingPane(true)
 
-      const onMove = (cx: number) => {
-        // 仕切りを左に動かす(cx < startX) と preview 列が広がる
-        const delta = startX - cx
+      let raf = 0
+      let pendingCx = clientX
+      const flush = () => {
+        raf = 0
+        const delta = startX - pendingCx
         const maxByViewport =
           typeof window !== 'undefined' ? Math.max(360, window.innerWidth - 280 - 240) : 1600
         const next = Math.max(360, Math.min(maxByViewport, startWidth + delta))
         setPaneWidth(next)
       }
-      const onMouseMove = (ev: MouseEvent) => onMove(ev.clientX)
+      const schedule = (cx: number) => {
+        pendingCx = cx
+        if (raf) return
+        raf = requestAnimationFrame(flush)
+      }
+      const onMouseMove = (ev: MouseEvent) => schedule(ev.clientX)
       const onTouchMove = (ev: TouchEvent) => {
-        if (ev.touches[0]) onMove(ev.touches[0].clientX)
+        if (ev.touches[0]) schedule(ev.touches[0].clientX)
       }
       const cleanup = () => {
+        if (raf) cancelAnimationFrame(raf)
         setIsDraggingPane(false)
         window.removeEventListener('mousemove', onMouseMove)
         window.removeEventListener('mouseup', cleanup)

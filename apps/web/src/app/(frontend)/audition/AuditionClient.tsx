@@ -14,6 +14,17 @@ import AdditionalSection from './AdditionalSection'
 type Props = { data: AuditionData }
 
 export default function AuditionClient({ data: initialData }: Props) {
+  // requestHandler を上書きして、Payload API への mergeData リクエストをスキップする。
+  // 親 (DetailEditClient) が常に完全なデータを postMessage で送ってくる前提で、
+  // 入力フィールドを編集するたびにサーバーラウンドトリップが発生する重さを回避。
+  const directRequestHandler = React.useCallback(
+    (args: { data: { data?: unknown } }) =>
+      Promise.resolve({
+        json: () => Promise.resolve(args.data?.data),
+      } as Response),
+    [],
+  )
+
   const { data: liveRaw } = useLivePreview<Record<string, unknown>>({
     initialData: initialData as unknown as Record<string, unknown>,
     serverURL:
@@ -21,6 +32,7 @@ export default function AuditionClient({ data: initialData }: Props) {
         ? window.location.origin
         : process.env.NEXT_PUBLIC_SERVER_URL || '',
     depth: 2,
+    requestHandler: directRequestHandler,
   })
   const data = useMemo<AuditionData>(
     () =>
