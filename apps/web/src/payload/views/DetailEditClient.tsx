@@ -234,6 +234,14 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     window.setTimeout(() => postLivePreview(data), 200)
   }, [data, postLivePreview])
 
+  // プレビューのスケール: previewWidth がペインに収まらないときは
+  // CSS transform で縮小して全幅レンダリングを表示する。
+  const PREVIEW_PADDING = 48 // body padding
+  const HANDLE_WIDTH = 24 // 左右ハンドル分
+  const availableInner = Math.max(MIN_WIDTH, paneWidth - PREVIEW_PADDING - HANDLE_WIDTH)
+  const previewScale = previewWidth > availableInner ? availableInner / previewWidth : 1
+  const visualPreviewWidth = previewWidth * previewScale
+
   const previewUrl = '/audition'
 
   return (
@@ -433,13 +441,18 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
             </div>
             <div className="ase-preview-hint">
               ハンドル（左右の縦バー）をドラッグして幅を変えられます
+              {previewScale < 1 && (
+                <span style={{ marginLeft: 8, color: '#1a1a1a', fontWeight: 500 }}>
+                  / 表示倍率 {Math.round(previewScale * 100)}%
+                </span>
+              )}
             </div>
           </div>
 
           <div className="ase-preview-body">
             <div
               className={`ase-preview-frame-wrap${isResizing ? ' is-resizing' : ''}`}
-              style={{ width: previewWidth + 24 /* handle widths */ }}
+              style={{ width: visualPreviewWidth + HANDLE_WIDTH }}
             >
               <button
                 type="button"
@@ -455,13 +468,26 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
               >
                 <span />
               </button>
-              <div className="ase-preview-frame" style={{ width: previewWidth }}>
+              <div
+                className="ase-preview-frame"
+                style={{ width: visualPreviewWidth, position: 'relative', overflow: 'hidden' }}
+              >
                 <iframe
                   ref={iframeRef}
                   src={previewUrl}
                   title="プレビュー"
                   onLoad={handleIframeLoad}
-                  style={{ pointerEvents: isResizing ? 'none' : 'auto' }}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: previewWidth,
+                    height: `${100 / previewScale}%`,
+                    transform: `scale(${previewScale})`,
+                    transformOrigin: 'top left',
+                    border: 0,
+                    pointerEvents: isResizing ? 'none' : 'auto',
+                  }}
                 />
               </div>
               <button
