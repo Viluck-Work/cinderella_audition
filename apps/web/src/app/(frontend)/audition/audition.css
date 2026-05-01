@@ -1672,16 +1672,38 @@
   }
 }
 
-/* AutoSite admin の編集モード時の見た目 */
+/* AutoSite admin の編集モード時の見た目
+ * outline は親の overflow:hidden（.title-reveal, .cta-wrap 等）で
+ * クリッピングされるので、内側に効く box-shadow inset と background で表示する */
 body.autosite-edit-mode [data-edit-path] {
   cursor: pointer;
-  outline: 1px dashed rgba(184, 92, 0, 0.5);
-  outline-offset: 4px;
-  transition: outline-color 0.15s ease, background 0.15s ease;
-  border-radius: 2px;
+  background: rgba(184, 92, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(184, 92, 0, 0.45);
+  border-radius: 3px;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
 }
 body.autosite-edit-mode [data-edit-path]:hover {
-  outline: 2px solid #b85c00;
-  outline-offset: 4px;
-  background: rgba(184, 92, 0, 0.08);
+  background: rgba(184, 92, 0, 0.22);
+  box-shadow: inset 0 0 0 2px #b85c00;
+}
+/* 親に overflow:hidden があるとクリッピングされて触りにくいので解除 */
+body.autosite-edit-mode .title-reveal,
+body.autosite-edit-mode .title-reveal > span,
+body.autosite-edit-mode .cta-wrap,
+body.autosite-edit-mode .group-card,
+body.autosite-edit-mode .flow-step,
+body.autosite-edit-mode .faq-item,
+body.autosite-edit-mode .platform-panel,
+body.autosite-edit-mode .reason-card,
+body.autosite-edit-mode .requirement-item,
+body.autosite-edit-mode .mv-card,
+body.autosite-edit-mode .conditions-table {
+  overflow: visible !important;
+}
+/* title-reveal のスライドアップアニメ自体も編集モードでは無効化（常に表示） */
+body.autosite-edit-mode .title-reveal > span {
+  transform: none !important;
+  opacity: 1 !important;
 }
