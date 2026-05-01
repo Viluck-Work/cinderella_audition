@@ -34,7 +34,7 @@ const TASKS: Task[] = [
     icon: '📢',
     title: 'お知らせを追加',
     desc: '休業案内、新サービス告知など',
-    href: '/admin/globals/audition',
+    href: '/admin/tasks?task=news',
   },
   {
     icon: '🕐',
