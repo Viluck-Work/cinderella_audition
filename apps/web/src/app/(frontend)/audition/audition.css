@@ -1671,3 +1671,17 @@
     transform: none !important;
   }
 }
+
+/* AutoSite admin の編集モード時の見た目 */
+body.autosite-edit-mode [data-edit-path] {
+  cursor: pointer;
+  outline: 1px dashed rgba(184, 92, 0, 0.5);
+  outline-offset: 4px;
+  transition: outline-color 0.15s ease, background 0.15s ease;
+  border-radius: 2px;
+}
+body.autosite-edit-mode [data-edit-path]:hover {
+  outline: 2px solid #b85c00;
+  outline-offset: 4px;
+  background: rgba(184, 92, 0, 0.08);
+}

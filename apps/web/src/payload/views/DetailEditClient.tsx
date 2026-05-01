@@ -109,6 +109,12 @@ export default function DetailEditClient({
   // モバイル: 編集 / プレビュー切替、サイドバードロワー
   const [mobileMode, setMobileMode] = useState<'editor' | 'preview'>('editor')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  // インライン編集モード（プレビュー上の要素クリックで編集ポップアップ表示）
+  const [inlineEditMode, setInlineEditMode] = useState(false)
+  const [inlineEdit, setInlineEdit] = useState<
+    | { path: string; rect: { top: number; left: number; width: number; height: number } }
+    | null
+  >(null)
 
   const setDeviceAndWidth = useCallback((d: Exclude<Device, 'custom'>) => {
     setDevice(d)
@@ -345,6 +351,84 @@ export default function DetailEditClient({
     if (activeSection.anchor) sendScrollTo(activeSection.anchor)
   }, [activeSection.anchor, sendScrollTo])
 
+  // 全 section の flat field を path で引けるようにする
+  // 'hero.stats.0.label' のような indexed path も対応
+  const fieldByPath = useMemo(() => {
+    const map = new Map<string, FlatFieldDef>()
+    const arrayDefs: ArrayFieldDef[] = []
+    for (const s of sections) {
+      for (const g of s.groups) {
+        for (const f of g.fields) {
+          if (f.kind === 'array') arrayDefs.push(f)
+          else map.set(f.path, f)
+        }
+      }
+    }
+    return { flatMap: map, arrayDefs }
+  }, [sections])
+
+  const resolveFieldDef = useCallback(
+    (path: string): FlatFieldDef | null => {
+      // 1. 平坦パスで直接ヒットしたら採用
+      const direct = fieldByPath.flatMap.get(path)
+      if (direct) return direct
+      // 2. 'hero.stats.0.label' → 'hero.stats' の array def を探し、サブフィールドを返す
+      for (const arr of fieldByPath.arrayDefs) {
+        if (path.startsWith(arr.path + '.')) {
+          const rest = path.slice(arr.path.length + 1) // '0.label'
+          const dot = rest.indexOf('.')
+          if (dot < 0) continue
+          const subPath = rest.slice(dot + 1) // 'label'
+          const sub = arr.itemFields.find((f) => f.path === subPath)
+          if (sub) return { ...sub, path }
+        }
+      }
+      return null
+    },
+    [fieldByPath],
+  )
+
+  // edit-mode toggle: iframe に on/off を送る
+  useEffect(() => {
+    const win = iframeRef.current?.contentWindow
+    if (!win) return
+    win.postMessage(
+      { type: 'autosite-edit-mode', enabled: inlineEditMode },
+      window.location.origin,
+    )
+  }, [inlineEditMode])
+
+  // iframe からの edit-request を受け取る
+  useEffect(() => {
+    const onMessage = (ev: MessageEvent) => {
+      if (ev.origin !== window.location.origin) return
+      if (!ev.data || typeof ev.data !== 'object') return
+      const msg = ev.data as {
+        type?: string
+        path?: string
+        rect?: { top: number; left: number; width: number; height: number }
+      }
+      if (msg.type !== 'autosite-edit-request') return
+      if (!msg.path || !msg.rect) return
+      setInlineEdit({ path: msg.path, rect: msg.rect })
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
+
+  // ポップアップを閉じる
+  const closeInlineEdit = useCallback(() => setInlineEdit(null), [])
+
+  // ポップアップ: iframe 内座標を親の座標に変換
+  const inlineEditPos = useMemo(() => {
+    if (!inlineEdit || !iframeRef.current) return null
+    const iframeRect = iframeRef.current.getBoundingClientRect()
+    return {
+      top: iframeRect.top + inlineEdit.rect.top + inlineEdit.rect.height + 8,
+      left: iframeRect.left + inlineEdit.rect.left,
+    }
+  }, [inlineEdit])
+
   // プレビューのスケール: previewWidth がペインに収まらないときは
   // CSS transform で縮小して全幅レンダリングを表示する。
   const PREVIEW_PADDING = 48 // body padding
@@ -539,6 +623,16 @@ export default function DetailEditClient({
         <aside className="ase-preview">
           <div className="ase-preview-header">
             <div className="ase-preview-title">プレビュー</div>
+            <button
+              type="button"
+              className={`ase-inline-edit-btn${inlineEditMode ? ' is-active' : ''}`}
+              onClick={() => {
+                setInlineEditMode((v) => !v)
+                if (inlineEditMode) setInlineEdit(null)
+              }}
+            >
+              {inlineEditMode ? '✓ 編集モード ON' : '✏ プレビューを直接編集'}
+            </button>
             <div className="ase-device-toggle">
               <button
                 type="button"
@@ -654,7 +748,104 @@ export default function DetailEditClient({
           </div>
         </aside>
       </div>
+
+      {inlineEdit && inlineEditPos && (
+        <InlineEditPopover
+          field={resolveFieldDef(inlineEdit.path)}
+          path={inlineEdit.path}
+          value={(getByPath(data, inlineEdit.path) as string) ?? ''}
+          position={inlineEditPos}
+          onChange={(v) => updateField(inlineEdit.path, v)}
+          onClose={closeInlineEdit}
+        />
+      )}
     </div>
+  )
+}
+
+function InlineEditPopover({
+  field,
+  path,
+  value,
+  position,
+  onChange,
+  onClose,
+}: {
+  field: FlatFieldDef | null
+  path: string
+  value: string
+  position: { top: number; left: number }
+  onChange: (v: string) => void
+  onClose: () => void
+}) {
+  const len = (value ?? '').length
+  const max = field?.recommendedMax
+  const overMax = !!max && len > max
+
+  // ESC で閉じる
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  return (
+    <>
+      <div className="ase-inline-edit-backdrop" onClick={onClose} />
+      <div
+        className="ase-inline-edit-popover"
+        style={{
+          top: Math.max(8, position.top),
+          left: Math.max(8, Math.min(position.left, window.innerWidth - 360)),
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="ase-inline-edit-head">
+          <div>
+            <div className="ase-inline-edit-label">{field?.label ?? path}</div>
+            {field?.help && <div className="ase-inline-edit-help">{field.help}</div>}
+          </div>
+          <button
+            type="button"
+            className="ase-inline-edit-close"
+            onClick={onClose}
+            aria-label="閉じる"
+          >
+            ×
+          </button>
+        </div>
+        {field?.kind === 'textarea' ? (
+          <textarea
+            className="ase-input"
+            rows={4}
+            autoFocus
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        ) : (
+          <input
+            type="text"
+            className="ase-input"
+            autoFocus
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        )}
+        {max && (
+          <div className={`ase-char-counter${overMax ? ' is-warn' : ''}`}>
+            {len} / 推奨{max}文字以内
+          </div>
+        )}
+        <div className="ase-inline-edit-footer">
+          <span className="ase-inline-edit-hint">編集内容は自動的にプレビューに反映されます</span>
+          <button type="button" className="ase-btn-primary" onClick={onClose}>
+            完了
+          </button>
+        </div>
+      </div>
+    </>
   )
 }
 
