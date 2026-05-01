@@ -449,11 +449,11 @@
   position: fixed;
   inset: 0;
   background: transparent;
-  z-index: 90;
+  z-index: 9990;
 }
 .ase-inline-edit-popover {
   position: fixed;
-  z-index: 100;
+  z-index: 9999;
   width: 340px;
   max-width: calc(100vw - 16px);
   background: #ffffff;
