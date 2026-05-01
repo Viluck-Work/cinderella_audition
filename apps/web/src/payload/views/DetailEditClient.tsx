@@ -98,19 +98,42 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     }
   }, [data])
 
-  // プレビュー iframe の自動リフレッシュ（dirty 時に debounce）
+  // ライブプレビュー: 入力のたびに iframe へ postMessage を送る。
+  // AuditionClient の useLivePreview フックが受け取ってマージ・再描画する。
+  // postMessage の origin が hook の serverURL と一致する必要があるため、
+  // 同一オリジン (NEXT_PUBLIC_SERVER_URL || window.location.origin) を使う。
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const refreshTimer = useRef<number | null>(null)
+  const iframeReadyRef = useRef(false)
+  const sendTimer = useRef<number | null>(null)
+
+  const postLivePreview = useCallback((payload: Record<string, unknown>) => {
+    const win = iframeRef.current?.contentWindow
+    if (!win) return
+    win.postMessage(
+      {
+        type: 'payload-live-preview',
+        globalSlug: 'audition',
+        data: payload,
+      },
+      window.location.origin,
+    )
+  }, [])
+
   useEffect(() => {
-    if (!isDirty) return
-    if (refreshTimer.current) window.clearTimeout(refreshTimer.current)
-    refreshTimer.current = window.setTimeout(() => {
-      if (iframeRef.current) iframeRef.current.src = iframeRef.current.src
-    }, 700)
+    if (!iframeReadyRef.current) return
+    if (sendTimer.current) window.clearTimeout(sendTimer.current)
+    sendTimer.current = window.setTimeout(() => postLivePreview(data), 80)
     return () => {
-      if (refreshTimer.current) window.clearTimeout(refreshTimer.current)
+      if (sendTimer.current) window.clearTimeout(sendTimer.current)
     }
-  }, [isDirty, data])
+  }, [data, postLivePreview])
+
+  const handleIframeLoad = useCallback(() => {
+    iframeReadyRef.current = true
+    // iframe 内の useLivePreview がマウント完了後に購読を始めるので、
+    // 少し待ってから初期値を一度送る
+    window.setTimeout(() => postLivePreview(data), 200)
+  }, [data, postLivePreview])
 
   const previewUrl = '/audition'
 
@@ -272,12 +295,17 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
               className="ase-preview-frame"
               style={{ maxWidth: device === 'mobile' ? 390 : '100%' }}
             >
-              <iframe ref={iframeRef} src={previewUrl} title="プレビュー" />
+              <iframe
+                ref={iframeRef}
+                src={previewUrl}
+                title="プレビュー"
+                onLoad={handleIframeLoad}
+              />
             </div>
             <div className="ase-preview-note">
-              保存ボタンを押すと公開されます。
+              入力すると即座にプレビューに反映されます。
               <br />
-              プレビューは数秒遅れて反映されます。
+              「保存して公開」を押すまでサイトには反映されません。
             </div>
           </div>
         </aside>
