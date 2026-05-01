@@ -94,7 +94,14 @@ function NewsTask() {
     <div className="autosite-task">
       <header className="ast-header">
         <div className="ast-header-left">
-          <div className="ast-logo">AutoSite</div>
+          <Link href="/admin" className="ast-logo">
+            AutoSite
+          </Link>
+          <nav className="ast-nav">
+            <Link href="/admin" className="ast-nav-link">
+              TOP
+            </Link>
+          </nav>
           <div className="ast-company">株式会社サンプル様</div>
         </div>
         <div className="ast-header-right">

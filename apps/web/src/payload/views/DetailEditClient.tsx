@@ -118,7 +118,14 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     <div className="autosite-edit">
       <header className="ase-header">
         <div className="ase-header-left">
-          <div className="ase-logo">AutoSite</div>
+          <Link href="/admin" className="ase-logo">
+            AutoSite
+          </Link>
+          <nav className="ase-nav">
+            <Link href="/admin" className="ase-nav-link">
+              TOP
+            </Link>
+          </nav>
           <div className="ase-company">株式会社サンプル様</div>
         </div>
         <div className="ase-header-right">
