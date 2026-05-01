@@ -10,6 +10,7 @@ type Props = {
   sections: SectionDef[]
   activeSlug: string
   initialData: Record<string, unknown> | null
+  companyName?: string
 }
 
 type Device = 'pc' | 'tablet' | 'mobile' | 'custom'
@@ -79,7 +80,13 @@ const setByPath = (
   return next as Record<string, unknown>
 }
 
-export default function DetailEditClient({ sidebar, sections, activeSlug, initialData }: Props) {
+export default function DetailEditClient({
+  sidebar,
+  sections,
+  activeSlug,
+  initialData,
+  companyName = '株式会社サンプル様',
+}: Props) {
   const activeSection = useMemo(
     () => sections.find((s) => s.slug === activeSlug) ?? sections[0],
     [sections, activeSlug],
@@ -299,7 +306,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
   useEffect(() => {
     if (!iframeReadyRef.current) return
     if (sendTimer.current) window.clearTimeout(sendTimer.current)
-    sendTimer.current = window.setTimeout(() => postLivePreview(data), 80)
+    sendTimer.current = window.setTimeout(() => postLivePreview(data), 250)
     return () => {
       if (sendTimer.current) window.clearTimeout(sendTimer.current)
     }
@@ -349,7 +356,7 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
               TOP
             </Link>
           </nav>
-          <div className="ase-company">株式会社サンプル様</div>
+          <div className="ase-company">{companyName}</div>
         </div>
         <div className="ase-header-right">
           <a className="ase-btn-secondary" href={previewUrl} target="_blank" rel="noreferrer">
@@ -634,7 +641,7 @@ function FieldRouter({
   )
 }
 
-function FieldRow({
+const FieldRow = React.memo(function FieldRow({
   field,
   value,
   onChange,
@@ -673,7 +680,7 @@ function FieldRow({
       )}
     </div>
   )
-}
+})
 
 function ArrayField({
   field,
