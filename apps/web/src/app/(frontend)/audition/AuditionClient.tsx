@@ -132,6 +132,32 @@ export default function AuditionClient({ data: initialData }: Props) {
     }
   }, [navOpen])
 
+  // 親 (DetailEditClient) からの 'autosite-scroll' メッセージで指定アンカーへスクロール
+  useEffect(() => {
+    const onMessage = (ev: MessageEvent) => {
+      if (ev.origin !== window.location.origin) return
+      if (
+        ev.data &&
+        typeof ev.data === 'object' &&
+        (ev.data as { type?: unknown }).type === 'autosite-scroll'
+      ) {
+        const anchor = (ev.data as { anchor?: string }).anchor
+        if (typeof anchor !== 'string') return
+        if (anchor === '' || anchor === '#top') {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+          return
+        }
+        const sel = anchor.startsWith('#') ? anchor : `#${anchor}`
+        const el = document.querySelector(sel)
+        if (el instanceof HTMLElement) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
+
   const themeVar = buildThemeVars(
     data.theme.backgroundColor,
     data.theme.primaryColor,
