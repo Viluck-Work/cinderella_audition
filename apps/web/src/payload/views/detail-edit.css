@@ -654,6 +654,17 @@
   color: #ffffff;
   border-color: #1a1a1a;
 }
+/* インライン編集トグル（モバイル時、プレビューモードでのみ表示） */
+.ase-mobile-edit-toggle {
+  background: #ffffff;
+  border: 1px solid #b85c00;
+  color: #b85c00;
+  white-space: nowrap;
+}
+.ase-mobile-edit-toggle.is-active {
+  background: #b85c00;
+  color: #ffffff;
+}
 /* プレビュー / 編集 切替ボタンは強調 */
 .ase-mobile-nav-toggle {
   background: #1a1a1a;

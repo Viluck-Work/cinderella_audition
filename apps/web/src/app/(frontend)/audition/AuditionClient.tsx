@@ -646,8 +646,10 @@ export default function AuditionClient({ data: initialData }: Props) {
                       </div>
                       <p data-edit-path={`groups.items.${i}.desc`}>{g.desc}</p>
                       <ul className="detail-list">
-                        {g.highlights.map((h) => (
-                          <li key={h}>{h}</li>
+                        {g.highlights.map((h, j) => (
+                          <li key={j} data-edit-path={`groups.items.${i}.highlights.${j}.text`}>
+                            {h}
+                          </li>
                         ))}
                       </ul>
                     </div>
