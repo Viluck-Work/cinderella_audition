@@ -56,6 +56,28 @@ export const Audition: GlobalConfig = {
       },
     },
     {
+      name: 'sectionLabels',
+      type: 'group',
+      label: '編集画面のセクション名',
+      admin: {
+        description:
+          '経営者向け編集画面（/admin/edit）のサイドバーやタイトルに表示される名称。業種に合わせて言い換え可能（例: 「メインビジュアル」→「トップ画像」）',
+      },
+      fields: [
+        { name: 'theme', type: 'text', label: '色とロゴ', defaultValue: '色とロゴ' },
+        { name: 'hero', type: 'text', label: 'メインビジュアル', defaultValue: 'メインビジュアル' },
+        { name: 'about', type: 'text', label: '強み・特徴', defaultValue: '強み・特徴' },
+        { name: 'tracks', type: 'text', label: '実績', defaultValue: '実績' },
+        { name: 'groups', type: 'text', label: '既存グループ', defaultValue: '既存グループ' },
+        { name: 'support', type: 'text', label: 'サポート', defaultValue: 'サポート' },
+        { name: 'flow', type: 'text', label: '流れ', defaultValue: '流れ' },
+        { name: 'requirements', type: 'text', label: '求める人物像', defaultValue: '求める人物像' },
+        { name: 'conditions', type: 'text', label: '活動条件', defaultValue: '活動条件' },
+        { name: 'faq', type: 'text', label: 'FAQ', defaultValue: 'FAQ' },
+        { name: 'cta', type: 'text', label: '応募ボタン', defaultValue: '応募ボタン' },
+      ],
+    },
+    {
       name: 'theme',
       type: 'group',
       label: 'カラーテーマ',

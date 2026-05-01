@@ -22,11 +22,19 @@ export default async function DetailEdit(props: AdminViewServerProps) {
   const sectionSlug = pickSlug(sp)
 
   // Audition global の現状値 + SiteSettings から会社名を取得
-  let initialData: unknown = null
+  let initialData: Record<string, unknown> | null = null
   let siteName = '株式会社サンプル'
+  let sectionLabels: Record<string, string> = {}
   try {
     const payload = await getPayload({ config })
-    initialData = await payload.findGlobal({ slug: 'audition', depth: 0 })
+    const audition = (await payload.findGlobal({ slug: 'audition', depth: 0 })) as Record<
+      string,
+      unknown
+    >
+    initialData = audition
+    if (audition?.sectionLabels && typeof audition.sectionLabels === 'object') {
+      sectionLabels = audition.sectionLabels as Record<string, string>
+    }
     const settings = (await payload.findGlobal({ slug: 'site-settings' })) as {
       siteName?: string
     } | null
@@ -40,8 +48,9 @@ export default async function DetailEdit(props: AdminViewServerProps) {
       sidebar={SIDEBAR}
       sections={SECTIONS}
       activeSlug={sectionSlug}
-      initialData={initialData as Record<string, unknown> | null}
+      initialData={initialData}
       companyName={`${siteName}様`}
+      sectionLabels={sectionLabels}
     />
   )
 }
