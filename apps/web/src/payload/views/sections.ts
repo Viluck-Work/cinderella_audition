@@ -21,8 +21,8 @@ export type ArrayFieldDef = {
   /** 配列フィールドへの dot path （例: 'hero.stats'） */
   path: string
   kind: 'array'
-  /** 各アイテムの表示ラベル（例: ステータス {n}） */
-  itemLabel?: (i: number) => string
+  /** 各アイテムの表示ラベル。'{n}' があれば 1 始まりの番号に置換（例: 'カード {n}'） */
+  itemLabelTemplate?: string
   /** アイテム内のサブフィールド（path はアイテムからの相対） */
   itemFields: FlatFieldDef[]
   /** 「追加」ボタンで作る初期値 */
@@ -106,7 +106,7 @@ export const SECTIONS: SectionDef[] = [
             label: 'カード一覧',
             path: 'hero.stats',
             kind: 'array',
-            itemLabel: (i) => `カード ${i + 1}`,
+            itemLabelTemplate: 'カード {n}',
             defaultItem: { label: '', value: '', sub: '' },
             itemFields: [
               { label: 'ラベル', path: 'label', kind: 'text', recommendedMax: 20 },
@@ -158,7 +158,7 @@ export const SECTIONS: SectionDef[] = [
             label: '段落',
             path: 'about.paragraphs',
             kind: 'array',
-            itemLabel: (i) => `段落 ${i + 1}`,
+            itemLabelTemplate: '段落 {n}',
             defaultItem: { text: '' },
             itemFields: [{ label: '本文', path: 'text', kind: 'textarea', recommendedMax: 300 }],
           },
@@ -171,7 +171,7 @@ export const SECTIONS: SectionDef[] = [
             label: '指標カード',
             path: 'about.scoreboard',
             kind: 'array',
-            itemLabel: (i) => `カード ${i + 1}`,
+            itemLabelTemplate: 'カード {n}',
             defaultItem: { label: '', value: '', desc: '' },
             itemFields: [
               { label: 'ラベル', path: 'label', kind: 'text', recommendedMax: 20 },
@@ -211,7 +211,7 @@ export const SECTIONS: SectionDef[] = [
             label: 'プラットフォーム一覧',
             path: 'tracks.platforms',
             kind: 'array',
-            itemLabel: (i) => `プラットフォーム ${i + 1}`,
+            itemLabelTemplate: 'プラットフォーム {n}',
             defaultItem: { iconPath: '', name: '', desc: '' },
             itemFields: [
               { label: 'アイコンパス', path: 'iconPath', kind: 'text' },
@@ -239,7 +239,7 @@ export const SECTIONS: SectionDef[] = [
             label: 'Music Videos',
             path: 'tracks.mvs',
             kind: 'array',
-            itemLabel: (i) => `MV ${i + 1}`,
+            itemLabelTemplate: 'MV {n}',
             defaultItem: { youtubeId: '', kicker: '', title: '', desc: '', href: '' },
             itemFields: [
               { label: 'YouTube 動画 ID', path: 'youtubeId', kind: 'text' },
@@ -280,7 +280,7 @@ export const SECTIONS: SectionDef[] = [
             label: 'グループ',
             path: 'groups.items',
             kind: 'array',
-            itemLabel: (i) => `グループ ${i + 1}`,
+            itemLabelTemplate: 'グループ {n}',
             defaultItem: {
               badge: '',
               name: '',
@@ -331,7 +331,7 @@ export const SECTIONS: SectionDef[] = [
             label: '理由',
             path: 'support.reasons',
             kind: 'array',
-            itemLabel: (i) => `理由 ${i + 1}`,
+            itemLabelTemplate: '理由 {n}',
             defaultItem: { no: '', title: '', desc: '', reveal: 'left' },
             itemFields: [
               { label: 'No.', path: 'no', kind: 'text' },
@@ -368,7 +368,7 @@ export const SECTIONS: SectionDef[] = [
             label: 'ステップ',
             path: 'flow.steps',
             kind: 'array',
-            itemLabel: (i) => `Step ${i + 1}`,
+            itemLabelTemplate: 'Step {n}',
             defaultItem: { step: '', title: '', desc: '' },
             itemFields: [
               { label: 'ステップ番号', path: 'step', kind: 'text' },
@@ -405,7 +405,7 @@ export const SECTIONS: SectionDef[] = [
             label: '項目',
             path: 'requirements.items',
             kind: 'array',
-            itemLabel: (i) => `項目 ${i + 1}`,
+            itemLabelTemplate: '項目 {n}',
             defaultItem: { title: '', desc: '' },
             itemFields: [
               { label: '見出し', path: 'title', kind: 'text' },
@@ -442,7 +442,7 @@ export const SECTIONS: SectionDef[] = [
             label: '行',
             path: 'conditions.rows',
             kind: 'array',
-            itemLabel: (i) => `行 ${i + 1}`,
+            itemLabelTemplate: '行 {n}',
             defaultItem: { category: '', beforeDebut: '', afterDebut: '', oneYear: '' },
             itemFields: [
               { label: '項目', path: 'category', kind: 'text' },
@@ -480,7 +480,7 @@ export const SECTIONS: SectionDef[] = [
             label: '質問',
             path: 'faq.items',
             kind: 'array',
-            itemLabel: (i) => `Q${i + 1}`,
+            itemLabelTemplate: 'Q{n}',
             defaultItem: { question: '', answer: '' },
             itemFields: [
               { label: '質問', path: 'question', kind: 'text' },
