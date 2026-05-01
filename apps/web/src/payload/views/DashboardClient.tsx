@@ -40,7 +40,7 @@ const TASKS: Task[] = [
     icon: '🕐',
     title: '営業時間を変える',
     desc: '通常営業日・臨時休業の設定',
-    href: '/admin/globals/audition',
+    href: '/admin/edit?section=hero',
   },
   {
     icon: '🖼',
@@ -52,19 +52,19 @@ const TASKS: Task[] = [
     icon: '🏢',
     title: '会社情報を編集',
     desc: '会社概要、代表挨拶、沿革',
-    href: '/admin/globals/audition',
+    href: '/admin/edit?section=about',
   },
   {
     icon: '📋',
     title: 'サービス内容を編集',
     desc: '提供サービスの追加・修正',
-    href: '/admin/globals/audition',
+    href: '/admin/edit?section=tracks',
   },
   {
     icon: '⚙',
     title: '細かい部分を編集',
     desc: '各ページの詳細設定',
-    href: '/admin/globals/audition',
+    href: '/admin/edit?section=hero',
   },
 ]
 

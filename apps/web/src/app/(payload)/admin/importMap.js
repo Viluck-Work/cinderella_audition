@@ -28,6 +28,8 @@ import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c08
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { default as default_c5322960aa1eb61016ac1ff9589177ba } from '@/payload/components/SharePreviewURL'
 import { default as default_9867b71f70a870a7cadc249fe18ef53e } from '@/payload/components/ColorField'
+import { default as default_53604cd720ee46bfc9d316c5de98de83 } from '@/payload/views/Dashboard'
+import { default as default_500e5752d17ef55860ae248d5a6c2406 } from '@/payload/views/DetailEdit'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -62,5 +64,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/payload/components/SharePreviewURL#default": default_c5322960aa1eb61016ac1ff9589177ba,
   "@/payload/components/ColorField#default": default_9867b71f70a870a7cadc249fe18ef53e,
+  "@/payload/views/Dashboard#default": default_53604cd720ee46bfc9d316c5de98de83,
+  "@/payload/views/DetailEdit#default": default_500e5752d17ef55860ae248d5a6c2406,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
