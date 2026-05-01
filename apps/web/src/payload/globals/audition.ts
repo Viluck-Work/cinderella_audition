@@ -47,6 +47,15 @@ export const Audition: GlobalConfig = {
       },
     },
     {
+      name: 'openEditorButton',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/payload/components/OpenEditorButton',
+        },
+      },
+    },
+    {
       name: 'theme',
       type: 'group',
       label: 'カラーテーマ',

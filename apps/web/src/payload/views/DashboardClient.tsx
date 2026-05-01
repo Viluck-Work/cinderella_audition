@@ -73,7 +73,14 @@ export default function DashboardClient({ data }: Props) {
     <div className="autosite-home">
       <header className="ash-header">
         <div className="ash-header-left">
-          <div className="ash-logo">AutoSite</div>
+          <Link href="/admin" className="ash-logo">
+            AutoSite
+          </Link>
+          <nav className="ash-nav">
+            <Link href="/admin" className="ash-nav-link is-active">
+              TOP
+            </Link>
+          </nav>
           <div className="ash-company">{data.companyName}</div>
         </div>
         <div className="ash-header-right">

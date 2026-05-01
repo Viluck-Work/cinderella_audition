@@ -36,6 +36,31 @@
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.ash-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ash-nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b6b6b;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.ash-nav-link:hover {
+  color: #1a1a1a;
+  background: #f4f3ec;
+}
+.ash-nav-link.is-active {
+  color: #1a1a1a;
+  background: #f4f3ec;
 }
 .ash-company {
   color: #6b6b6b;
