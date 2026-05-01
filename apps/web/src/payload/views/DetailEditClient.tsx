@@ -12,7 +12,16 @@ type Props = {
   initialData: Record<string, unknown> | null
 }
 
-type Device = 'pc' | 'mobile'
+type Device = 'pc' | 'tablet' | 'mobile' | 'custom'
+
+const DEVICE_PRESETS: Record<Exclude<Device, 'custom'>, number> = {
+  pc: 1280,
+  tablet: 768,
+  mobile: 390,
+}
+
+const MIN_WIDTH = 320
+const MAX_WIDTH = 1600
 
 const DISPLAY_PRESETS = [
   { value: 'standard', label: '標準' },
@@ -59,6 +68,18 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
   const [data, setData] = useState<Record<string, unknown>>(initialData ?? {})
   const baselineRef = useRef<Record<string, unknown>>(initialData ?? {})
   const [device, setDevice] = useState<Device>('pc')
+  const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.pc)
+
+  const setDeviceAndWidth = useCallback((d: Exclude<Device, 'custom'>) => {
+    setDevice(d)
+    setPreviewWidth(DEVICE_PRESETS[d])
+  }, [])
+
+  const setCustomWidth = useCallback((w: number) => {
+    const clamped = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, w))
+    setPreviewWidth(clamped)
+    setDevice('custom')
+  }, [])
   const [displayPreset, setDisplayPreset] = useState<string>('standard')
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
@@ -277,24 +298,55 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
               <button
                 type="button"
                 className={`ase-device-btn${device === 'pc' ? ' is-active' : ''}`}
-                onClick={() => setDevice('pc')}
+                onClick={() => setDeviceAndWidth('pc')}
+                title="PC (1280px)"
               >
                 PC
               </button>
               <button
                 type="button"
+                className={`ase-device-btn${device === 'tablet' ? ' is-active' : ''}`}
+                onClick={() => setDeviceAndWidth('tablet')}
+                title="タブレット (768px)"
+              >
+                タブレット
+              </button>
+              <button
+                type="button"
                 className={`ase-device-btn${device === 'mobile' ? ' is-active' : ''}`}
-                onClick={() => setDevice('mobile')}
+                onClick={() => setDeviceAndWidth('mobile')}
+                title="スマホ (390px)"
               >
                 スマホ
               </button>
             </div>
           </div>
+
+          <div className="ase-preview-control">
+            <input
+              type="range"
+              min={MIN_WIDTH}
+              max={MAX_WIDTH}
+              step={10}
+              value={previewWidth}
+              onChange={(e) => setCustomWidth(Number(e.target.value))}
+              className="ase-preview-slider"
+              aria-label="プレビューの横幅"
+            />
+            <div className="ase-preview-width-input">
+              <input
+                type="number"
+                min={MIN_WIDTH}
+                max={MAX_WIDTH}
+                value={previewWidth}
+                onChange={(e) => setCustomWidth(Number(e.target.value) || MIN_WIDTH)}
+              />
+              <span>px</span>
+            </div>
+          </div>
+
           <div className="ase-preview-body">
-            <div
-              className="ase-preview-frame"
-              style={{ maxWidth: device === 'mobile' ? 390 : '100%' }}
-            >
+            <div className="ase-preview-frame" style={{ width: previewWidth }}>
               <iframe
                 ref={iframeRef}
                 src={previewUrl}
