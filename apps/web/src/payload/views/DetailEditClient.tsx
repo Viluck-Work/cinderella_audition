@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { FieldDef, SectionDef, SidebarGroup } from './sections'
+import type { ArrayFieldDef, FieldDef, FlatFieldDef, SectionDef, SidebarGroup } from './sections'
 
 type Props = {
   sidebar: SidebarGroup[]
@@ -30,33 +30,53 @@ const DISPLAY_PRESETS = [
   { value: 'luxury', label: '高級感のある印象に' },
 ] as const
 
-// dot path で nested オブジェクトから値を取り出す
+// dot path で nested オブジェクト/配列から値を取り出す
+// 数値キー（'0', '1', ...）は配列インデックスとして扱う
 const getByPath = (obj: unknown, path: string): unknown => {
   return path.split('.').reduce<unknown>((acc, key) => {
-    if (acc && typeof acc === 'object' && key in (acc as Record<string, unknown>)) {
+    if (acc == null) return undefined
+    if (Array.isArray(acc)) {
+      const idx = Number(key)
+      return Number.isNaN(idx) ? undefined : acc[idx]
+    }
+    if (typeof acc === 'object') {
       return (acc as Record<string, unknown>)[key]
     }
     return undefined
   }, obj)
 }
 
-// dot path で nested オブジェクトを更新（新しい参照を返す）
+// dot path で nested オブジェクト/配列を更新（新しい参照を返す）
+const cloneShallow = (v: unknown): unknown => {
+  if (Array.isArray(v)) return [...v]
+  if (v && typeof v === 'object') return { ...(v as Record<string, unknown>) }
+  return v
+}
 const setByPath = (
   obj: Record<string, unknown>,
   path: string,
   value: unknown,
 ): Record<string, unknown> => {
   const keys = path.split('.')
-  const next = { ...obj }
-  let cur: Record<string, unknown> = next
+  const next = { ...obj } as Record<string, unknown> | unknown[]
+  let cur: Record<string, unknown> | unknown[] = next
   for (let i = 0; i < keys.length - 1; i++) {
     const k = keys[i]
-    const child = cur[k]
-    cur[k] = child && typeof child === 'object' ? { ...(child as Record<string, unknown>) } : {}
-    cur = cur[k] as Record<string, unknown>
+    const isArrIdx = /^\d+$/.test(k)
+    const curAsAny = cur as Record<string, unknown> & unknown[]
+    const child = isArrIdx ? curAsAny[Number(k)] : curAsAny[k]
+    const nextChild =
+      cloneShallow(child) ??
+      (/^\d+$/.test(keys[i + 1]) ? ([] as unknown[]) : ({} as Record<string, unknown>))
+    if (isArrIdx) curAsAny[Number(k)] = nextChild
+    else curAsAny[k] = nextChild
+    cur = nextChild as Record<string, unknown> | unknown[]
   }
-  cur[keys[keys.length - 1]] = value
-  return next
+  const lastKey = keys[keys.length - 1]
+  const isArrIdx = /^\d+$/.test(lastKey)
+  if (isArrIdx) (cur as unknown[])[Number(lastKey)] = value
+  else (cur as Record<string, unknown>)[lastKey] = value
+  return next as Record<string, unknown>
 }
 
 export default function DetailEditClient({ sidebar, sections, activeSlug, initialData }: Props) {
@@ -285,12 +305,27 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     }
   }, [data, postLivePreview])
 
+  const sendScrollTo = useCallback((anchor: string) => {
+    const win = iframeRef.current?.contentWindow
+    if (!win) return
+    win.postMessage({ type: 'autosite-scroll', anchor }, window.location.origin)
+  }, [])
+
   const handleIframeLoad = useCallback(() => {
     iframeReadyRef.current = true
     // iframe 内の useLivePreview がマウント完了後に購読を始めるので、
     // 少し待ってから初期値を一度送る
-    window.setTimeout(() => postLivePreview(data), 200)
-  }, [data, postLivePreview])
+    window.setTimeout(() => {
+      postLivePreview(data)
+      if (activeSection.anchor) sendScrollTo(activeSection.anchor)
+    }, 200)
+  }, [data, postLivePreview, sendScrollTo, activeSection.anchor])
+
+  // セクション切替で iframe をスクロール
+  useEffect(() => {
+    if (!iframeReadyRef.current) return
+    if (activeSection.anchor) sendScrollTo(activeSection.anchor)
+  }, [activeSection.anchor, sendScrollTo])
 
   // プレビューのスケール: previewWidth がペインに収まらないときは
   // CSS transform で縮小して全幅レンダリングを表示する。
@@ -370,15 +405,15 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
                 {group.desc && <div className="ase-field-group-desc">{group.desc}</div>}
 
                 {group.fields.map((field) => (
-                  <FieldRow
+                  <FieldRouter
                     key={field.path}
                     field={field}
-                    value={(getByPath(data, field.path) as string) ?? ''}
-                    onChange={(v) => updateField(field.path, v)}
+                    data={data}
+                    onUpdate={updateField}
                   />
                 ))}
 
-                {group.showDisplayPreset && (
+                {gi === 0 && activeSection.slug === 'hero' && (
                   <div style={{ marginTop: 24 }}>
                     <div className="ase-field-group-title" style={{ fontSize: 13 }}>
                       表示の仕方
@@ -578,12 +613,33 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
   )
 }
 
+function FieldRouter({
+  field,
+  data,
+  onUpdate,
+}: {
+  field: FieldDef
+  data: Record<string, unknown>
+  onUpdate: (path: string, value: unknown) => void
+}) {
+  if (field.kind === 'array') {
+    return <ArrayField field={field} data={data} onUpdate={onUpdate} />
+  }
+  return (
+    <FieldRow
+      field={field}
+      value={(getByPath(data, field.path) as string) ?? ''}
+      onChange={(v) => onUpdate(field.path, v)}
+    />
+  )
+}
+
 function FieldRow({
   field,
   value,
   onChange,
 }: {
-  field: FieldDef
+  field: FlatFieldDef
   value: string
   onChange: (v: string) => void
 }) {
@@ -615,6 +671,110 @@ function FieldRow({
           {len} / 推奨{max}文字以内
         </div>
       )}
+    </div>
+  )
+}
+
+function ArrayField({
+  field,
+  data,
+  onUpdate,
+}: {
+  field: ArrayFieldDef
+  data: Record<string, unknown>
+  onUpdate: (path: string, value: unknown) => void
+}) {
+  const raw = getByPath(data, field.path)
+  const items = Array.isArray(raw) ? (raw as Record<string, unknown>[]) : []
+  const minItems = field.minItems ?? 0
+
+  const addItem = () => {
+    onUpdate(field.path, [...items, { ...field.defaultItem }])
+  }
+  const removeItem = (i: number) => {
+    if (items.length <= minItems) return
+    const next = items.slice()
+    next.splice(i, 1)
+    onUpdate(field.path, next)
+  }
+  const moveItem = (i: number, dir: -1 | 1) => {
+    const j = i + dir
+    if (j < 0 || j >= items.length) return
+    const next = items.slice()
+    const tmp = next[i]
+    next[i] = next[j]
+    next[j] = tmp
+    onUpdate(field.path, next)
+  }
+
+  return (
+    <div className="ase-field">
+      <div className="ase-array-header">
+        <label className="ase-field-label" style={{ marginBottom: 0 }}>
+          {field.label}
+        </label>
+        <button type="button" className="ase-array-add" onClick={addItem}>
+          ＋ 追加
+        </button>
+      </div>
+      {field.help && <div className="ase-field-help">{field.help}</div>}
+
+      <div className="ase-array-items">
+        {items.length === 0 && <div className="ase-array-empty">まだ項目がありません</div>}
+        {items.map((_, i) => (
+          <div key={i} className="ase-array-item">
+            <div className="ase-array-item-head">
+              <span className="ase-array-item-label">
+                {field.itemLabel ? field.itemLabel(i) : `${field.label} ${i + 1}`}
+              </span>
+              <div className="ase-array-item-actions">
+                <button
+                  type="button"
+                  className="ase-array-mini-btn"
+                  onClick={() => moveItem(i, -1)}
+                  disabled={i === 0}
+                  title="上へ"
+                  aria-label="上へ"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className="ase-array-mini-btn"
+                  onClick={() => moveItem(i, 1)}
+                  disabled={i === items.length - 1}
+                  title="下へ"
+                  aria-label="下へ"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  className="ase-array-mini-btn ase-array-remove"
+                  onClick={() => removeItem(i)}
+                  disabled={items.length <= minItems}
+                  title="削除"
+                  aria-label="削除"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            <div className="ase-array-item-body">
+              {field.itemFields.map((sub) => (
+                <FieldRow
+                  key={sub.path}
+                  field={sub}
+                  value={
+                    (getByPath(data, `${field.path}.${i}.${sub.path}`) as string) ?? ''
+                  }
+                  onChange={(v) => onUpdate(`${field.path}.${i}.${sub.path}`, v)}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
