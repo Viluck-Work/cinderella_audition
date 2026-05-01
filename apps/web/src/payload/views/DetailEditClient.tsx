@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 import type { ArrayFieldDef, FieldDef, FlatFieldDef, SectionDef, SidebarGroup } from './sections'
 
@@ -809,7 +810,10 @@ function InlineEditPopover({
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  return (
+  // SSR の最初のパスでは document が無いので createPortal 前に判定
+  if (typeof document === 'undefined') return null
+
+  const popoverNode = (
     <>
       <div className="ase-inline-edit-backdrop" onClick={onClose} />
       <div
@@ -862,6 +866,9 @@ function InlineEditPopover({
       </div>
     </>
   )
+
+  // 親コンテナの transform / overflow から逃れるため body 直下に portal
+  return createPortal(popoverNode, document.body)
 }
 
 function FieldRouter({
