@@ -419,14 +419,32 @@ export default function DetailEditClient({
   // ポップアップを閉じる
   const closeInlineEdit = useCallback(() => setInlineEdit(null), [])
 
-  // ポップアップ: iframe 内座標を親の座標に変換
+  // ポップアップ: iframe 内座標を親の座標に変換 + ビューポート内に収める
   const inlineEditPos = useMemo(() => {
     if (!inlineEdit || !iframeRef.current) return null
-    const iframeRect = iframeRef.current.getBoundingClientRect()
-    return {
-      top: iframeRect.top + inlineEdit.rect.top + inlineEdit.rect.height + 8,
-      left: iframeRect.left + inlineEdit.rect.left,
+    const iframeEl = iframeRef.current
+    const iframeRect = iframeEl.getBoundingClientRect()
+    // iframe 内部の論理サイズ vs 実際の描画サイズ → スケール
+    const innerW = iframeEl.contentWindow?.innerWidth || iframeRect.width || 1
+    const scale = iframeRect.width / innerW
+    const POPOVER_W = 340
+    const POPOVER_H = 240
+    const MARGIN = 12
+
+    // 要素の親ビューポート上での実描画位置（スケール考慮）
+    const elTop = iframeRect.top + inlineEdit.rect.top * scale
+    const elBottom = iframeRect.top + (inlineEdit.rect.top + inlineEdit.rect.height) * scale
+    const elLeft = iframeRect.left + inlineEdit.rect.left * scale
+
+    // 要素の下に置けるなら下、ダメなら上
+    let top = elBottom + 8
+    if (top + POPOVER_H + MARGIN > window.innerHeight) {
+      top = elTop - POPOVER_H - 8
     }
+    // それでも収まらないなら強制的にビューポート内へ
+    top = Math.max(MARGIN, Math.min(window.innerHeight - POPOVER_H - MARGIN, top))
+    let left = Math.max(MARGIN, Math.min(window.innerWidth - POPOVER_W - MARGIN, elLeft))
+    return { top, left }
   }, [inlineEdit])
 
   // プレビューのスケール: previewWidth がペインに収まらないときは
@@ -796,10 +814,7 @@ function InlineEditPopover({
       <div className="ase-inline-edit-backdrop" onClick={onClose} />
       <div
         className="ase-inline-edit-popover"
-        style={{
-          top: Math.max(8, position.top),
-          left: Math.max(8, Math.min(position.left, window.innerWidth - 360)),
-        }}
+        style={{ top: position.top, left: position.left }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="ase-inline-edit-head">
