@@ -1,6 +1,9 @@
 import type { AdminViewServerProps } from 'payload'
 
 import { headers as nextHeaders } from 'next/headers'
+import { getPayload } from 'payload'
+
+import config from '../../../payload.config'
 
 import './dashboard.css'
 
@@ -16,9 +19,21 @@ export default async function Dashboard(_props: AdminViewServerProps) {
   // 現在はモックデータ。
   await nextHeaders().catch(() => null)
 
+  // SiteSettings から会社名を取得
+  let siteName = '株式会社サンプル'
+  try {
+    const payload = await getPayload({ config })
+    const settings = (await payload.findGlobal({ slug: 'site-settings' })) as {
+      siteName?: string
+    } | null
+    if (settings?.siteName) siteName = settings.siteName
+  } catch {
+    // フォールバック
+  }
+
   const today = new Date()
   const data = {
-    companyName: '株式会社サンプル様',
+    companyName: `${siteName}様`,
     userInitial: '山',
     userName: '山田',
     today: formatDate(today),
