@@ -1,0 +1,292 @@
+/* AutoSite Admin Home — scoped under .autosite-home so Payload's own
+   admin chrome is not affected.  Color/typography tokens follow
+   AUTOSITE_UI_IMPLEMENTATION.md. */
+
+.autosite-home,
+.autosite-home * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.autosite-home {
+  background: #fafaf7;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  min-height: calc(100vh - 0px);
+}
+
+/* Header */
+.ash-header {
+  background: #ffffff;
+  border-bottom: 1px solid #eae9e2;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ash-header-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.ash-logo {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.ash-company {
+  color: #6b6b6b;
+  font-size: 14px;
+}
+.ash-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ash-btn-secondary {
+  background: #ffffff;
+  border: 1px solid #dad9d2;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1a1a1a;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease;
+  text-decoration: none;
+}
+.ash-btn-secondary:hover {
+  background: #f4f3ec;
+}
+
+.ash-avatar {
+  width: 32px;
+  height: 32px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+/* Main */
+.ash-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+/* Greeting */
+.ash-greeting {
+  margin-bottom: 56px;
+}
+.ash-date {
+  font-size: 13px;
+  color: #6b6b6b;
+  margin-bottom: 8px;
+}
+.ash-greeting h1 {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Section */
+.ash-section {
+  margin-bottom: 56px;
+}
+.ash-section-label {
+  font-size: 11px;
+  color: #6b6b6b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Task grid */
+.ash-task-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.ash-task-card {
+  background: #ffffff;
+  border: 1px solid #eae9e2;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+}
+.ash-task-card:hover {
+  border-color: #1a1a1a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.ash-task-icon {
+  width: 36px;
+  height: 36px;
+  background: #f4f3ec;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.ash-task-title {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.ash-task-desc {
+  font-size: 12px;
+  color: #6b6b6b;
+  line-height: 1.5;
+}
+
+/* History */
+.ash-history-card {
+  background: #ffffff;
+  border: 1px solid #eae9e2;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.ash-history-item {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f4f3ec;
+  transition: background 0.15s ease;
+}
+.ash-history-item:last-child {
+  border-bottom: none;
+}
+.ash-history-item:hover {
+  background: #fafaf7;
+}
+.ash-history-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ash-history-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.ash-history-dot.is-recent {
+  background: #1a1a1a;
+}
+.ash-history-dot.is-old {
+  background: #b5b5b0;
+}
+.ash-history-title {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+.ash-history-time {
+  font-size: 12px;
+  color: #6b6b6b;
+}
+.ash-btn-link {
+  background: none;
+  border: none;
+  color: #6b6b6b;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ash-btn-link:hover {
+  color: #1a1a1a;
+}
+
+/* AI maintenance */
+.ash-ai-card {
+  background: #1a1a1a;
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.ash-ai-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+.ash-ai-label {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-bottom: 24px;
+  letter-spacing: 0.05em;
+}
+.ash-ai-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin-bottom: 24px;
+}
+.ash-ai-num {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+.ash-ai-unit {
+  font-size: 18px;
+  opacity: 0.6;
+  font-weight: 300;
+  margin-left: 2px;
+}
+.ash-ai-stat-label {
+  font-size: 12px;
+  opacity: 0.6;
+  line-height: 1.5;
+}
+.ash-ai-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  font-size: 13px;
+  opacity: 0.75;
+  line-height: 1.7;
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .ash-task-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ash-ai-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .ash-task-grid {
+    grid-template-columns: 1fr;
+  }
+  .ash-ai-stats {
+    grid-template-columns: 1fr;
+  }
+}
