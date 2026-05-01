@@ -80,6 +80,44 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
     setPreviewWidth(clamped)
     setDevice('custom')
   }, [])
+
+  // ドラッグでプレビュー幅をリサイズ
+  const [isResizing, setIsResizing] = useState(false)
+  const startResize = useCallback(
+    (clientX: number, side: 'left' | 'right') => {
+      const startX = clientX
+      const startWidth = previewWidth
+      setIsResizing(true)
+
+      const onMove = (cx: number) => {
+        const delta = cx - startX
+        // 中央寄せなのでハンドルからの delta はそのまま伸縮量に。
+        // 左ハンドルは左方向で広がる、右ハンドルは右方向で広がる。
+        const next = side === 'right' ? startWidth + delta * 2 : startWidth - delta * 2
+        setCustomWidth(Math.round(next / 2) * 2)
+      }
+      const onMouseMove = (ev: MouseEvent) => onMove(ev.clientX)
+      const onTouchMove = (ev: TouchEvent) => {
+        if (ev.touches[0]) onMove(ev.touches[0].clientX)
+      }
+      const cleanup = () => {
+        setIsResizing(false)
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('mouseup', cleanup)
+        window.removeEventListener('touchmove', onTouchMove)
+        window.removeEventListener('touchend', cleanup)
+        document.body.style.userSelect = ''
+        document.body.style.cursor = ''
+      }
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', cleanup)
+      window.addEventListener('touchmove', onTouchMove, { passive: true })
+      window.addEventListener('touchend', cleanup)
+      document.body.style.userSelect = 'none'
+      document.body.style.cursor = 'ew-resize'
+    },
+    [previewWidth, setCustomWidth],
+  )
   const [displayPreset, setDisplayPreset] = useState<string>('standard')
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
@@ -323,16 +361,6 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
           </div>
 
           <div className="ase-preview-control">
-            <input
-              type="range"
-              min={MIN_WIDTH}
-              max={MAX_WIDTH}
-              step={10}
-              value={previewWidth}
-              onChange={(e) => setCustomWidth(Number(e.target.value))}
-              className="ase-preview-slider"
-              aria-label="プレビューの横幅"
-            />
             <div className="ase-preview-width-input">
               <input
                 type="number"
@@ -343,16 +371,53 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
               />
               <span>px</span>
             </div>
+            <div className="ase-preview-hint">
+              ハンドル（左右の縦バー）をドラッグして幅を変えられます
+            </div>
           </div>
 
           <div className="ase-preview-body">
-            <div className="ase-preview-frame" style={{ width: previewWidth }}>
-              <iframe
-                ref={iframeRef}
-                src={previewUrl}
-                title="プレビュー"
-                onLoad={handleIframeLoad}
-              />
+            <div
+              className={`ase-preview-frame-wrap${isResizing ? ' is-resizing' : ''}`}
+              style={{ width: previewWidth + 24 /* handle widths */ }}
+            >
+              <button
+                type="button"
+                aria-label="左から幅を変更"
+                className="ase-resize-handle ase-resize-handle-left"
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                  startResize(e.clientX, 'left')
+                }}
+                onTouchStart={(e) => {
+                  if (e.touches[0]) startResize(e.touches[0].clientX, 'left')
+                }}
+              >
+                <span />
+              </button>
+              <div className="ase-preview-frame" style={{ width: previewWidth }}>
+                <iframe
+                  ref={iframeRef}
+                  src={previewUrl}
+                  title="プレビュー"
+                  onLoad={handleIframeLoad}
+                  style={{ pointerEvents: isResizing ? 'none' : 'auto' }}
+                />
+              </div>
+              <button
+                type="button"
+                aria-label="右から幅を変更"
+                className="ase-resize-handle ase-resize-handle-right"
+                onMouseDown={(e) => {
+                  e.preventDefault()
+                  startResize(e.clientX, 'right')
+                }}
+                onTouchStart={(e) => {
+                  if (e.touches[0]) startResize(e.touches[0].clientX, 'right')
+                }}
+              >
+                <span />
+              </button>
             </div>
             <div className="ase-preview-note">
               入力すると即座にプレビューに反映されます。
