@@ -22,7 +22,7 @@ export default function AdditionalSection({ block }: { block: AdditionalSectionB
               <div className="section-top">
                 {block.label && <div className="section-label">{block.label}</div>}
                 {block.heading && (
-                  <h2 className="section-title title-reveal">
+                  <h2 className="section-title">
                     <span>{block.heading}</span>
                   </h2>
                 )}
@@ -80,7 +80,7 @@ export default function AdditionalSection({ block }: { block: AdditionalSectionB
               <div className="section-top">
                 {block.label && <div className="section-label">{block.label}</div>}
                 {block.heading && (
-                  <h2 className="section-title title-reveal">
+                  <h2 className="section-title">
                     <span>{block.heading}</span>
                   </h2>
                 )}
@@ -243,7 +243,7 @@ export default function AdditionalSection({ block }: { block: AdditionalSectionB
               <div className="section-top">
                 {block.label && <div className="section-label">{block.label}</div>}
                 {block.heading && (
-                  <h2 className="section-title title-reveal">
+                  <h2 className="section-title">
                     <span>{block.heading}</span>
                   </h2>
                 )}
@@ -270,7 +270,7 @@ export default function AdditionalSection({ block }: { block: AdditionalSectionB
               <div className="section-top">
                 {block.label && <div className="section-label">{block.label}</div>}
                 {block.heading && (
-                  <h2 className="section-title title-reveal">
+                  <h2 className="section-title">
                     <span>{block.heading}</span>
                   </h2>
                 )}
