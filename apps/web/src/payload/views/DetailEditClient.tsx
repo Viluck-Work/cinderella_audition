@@ -69,6 +69,8 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
   const baselineRef = useRef<Record<string, unknown>>(initialData ?? {})
   const [device, setDevice] = useState<Device>('pc')
   const [previewWidth, setPreviewWidth] = useState<number>(DEVICE_PRESETS.pc)
+  const [paneWidth, setPaneWidth] = useState<number>(720)
+  const [isDraggingPane, setIsDraggingPane] = useState(false)
 
   const setDeviceAndWidth = useCallback((d: Exclude<Device, 'custom'>) => {
     setDevice(d)
@@ -117,6 +119,44 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
       document.body.style.cursor = 'ew-resize'
     },
     [previewWidth, setCustomWidth],
+  )
+
+  // 列の仕切り (editor / preview pane の境界) ドラッグ
+  const startPaneDrag = useCallback(
+    (clientX: number) => {
+      const startX = clientX
+      const startWidth = paneWidth
+      setIsDraggingPane(true)
+
+      const onMove = (cx: number) => {
+        // 仕切りを左に動かす(cx < startX) と preview 列が広がる
+        const delta = startX - cx
+        const maxByViewport =
+          typeof window !== 'undefined' ? Math.max(360, window.innerWidth - 280 - 240) : 1600
+        const next = Math.max(360, Math.min(maxByViewport, startWidth + delta))
+        setPaneWidth(next)
+      }
+      const onMouseMove = (ev: MouseEvent) => onMove(ev.clientX)
+      const onTouchMove = (ev: TouchEvent) => {
+        if (ev.touches[0]) onMove(ev.touches[0].clientX)
+      }
+      const cleanup = () => {
+        setIsDraggingPane(false)
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('mouseup', cleanup)
+        window.removeEventListener('touchmove', onTouchMove)
+        window.removeEventListener('touchend', cleanup)
+        document.body.style.userSelect = ''
+        document.body.style.cursor = ''
+      }
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', cleanup)
+      window.addEventListener('touchmove', onTouchMove, { passive: true })
+      window.addEventListener('touchend', cleanup)
+      document.body.style.userSelect = 'none'
+      document.body.style.cursor = 'ew-resize'
+    },
+    [paneWidth],
   )
   const [displayPreset, setDisplayPreset] = useState<string>('standard')
   const [saving, setSaving] = useState(false)
@@ -219,7 +259,10 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
         </div>
       </header>
 
-      <div className="ase-layout">
+      <div
+        className={`ase-layout${isDraggingPane ? ' is-dragging-pane' : ''}`}
+        style={{ gridTemplateColumns: `240px minmax(0, 1fr) 6px ${paneWidth}px` }}
+      >
         {/* サイドバー */}
         <aside className="ase-sidebar">
           <Link href="/admin" className="ase-sidebar-back">
@@ -326,6 +369,23 @@ export default function DetailEditClient({ sidebar, sections, activeSlug, initia
               </button>
             </div>
           </div>
+        </div>
+
+        {/* 列の仕切り（ドラッグで preview pane の幅を調整） */}
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="編集とプレビューの区切りをドラッグして幅を変える"
+          className={`ase-pane-divider${isDraggingPane ? ' is-dragging' : ''}`}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            startPaneDrag(e.clientX)
+          }}
+          onTouchStart={(e) => {
+            if (e.touches[0]) startPaneDrag(e.touches[0].clientX)
+          }}
+        >
+          <span />
         </div>
 
         {/* プレビュー */}
