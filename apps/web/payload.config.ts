@@ -40,6 +40,11 @@ export default buildConfig({
         dashboard: {
           Component: '@/payload/views/Dashboard',
         },
+        detailEdit: {
+          Component: '@/payload/views/DetailEdit',
+          path: '/edit',
+          exact: false,
+        },
       },
     },
   },
