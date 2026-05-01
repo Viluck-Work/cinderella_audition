@@ -83,6 +83,8 @@
   font-family: inherit;
   color: #1a1a1a;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ase-btn-secondary:disabled {
   opacity: 0.4;
@@ -452,14 +454,19 @@
     display: flex;
     grid-column: 2 / 3;
   }
-  /* モバイル/タブレット: プレビューを画面幅にフィットさせる */
+  /* モバイル/タブレット: プレビューを画面いっぱいにする */
   .autosite-edit.is-preview-mode .ase-preview-frame-wrap {
     width: 100% !important;
+    height: 100% !important;
+    min-height: 0;
     align-self: stretch;
   }
   .autosite-edit.is-preview-mode .ase-preview-frame {
     width: 100% !important;
+    height: 100% !important;
     flex: 1;
+    border-radius: 0;
+    box-shadow: none;
   }
   .autosite-edit.is-preview-mode .ase-preview-frame iframe {
     width: 100% !important;
@@ -469,11 +476,13 @@
   }
   .autosite-edit.is-preview-mode .ase-resize-handle,
   .autosite-edit.is-preview-mode .ase-preview-control,
-  .autosite-edit.is-preview-mode .ase-device-toggle {
+  .autosite-edit.is-preview-mode .ase-preview-header,
+  .autosite-edit.is-preview-mode .ase-device-toggle,
+  .autosite-edit.is-preview-mode .ase-preview-note {
     display: none !important;
   }
   .autosite-edit.is-preview-mode .ase-preview-body {
-    padding: 12px;
+    padding: 0;
   }
   .ase-mobile-nav {
     display: flex !important;
@@ -542,11 +551,29 @@
   cursor: pointer;
   font-family: inherit;
   color: #1a1a1a;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ase-mobile-nav-btn.is-active {
   background: #1a1a1a;
   color: #ffffff;
   border-color: #1a1a1a;
+}
+/* プレビュー / 編集 切替ボタンは強調 */
+.ase-mobile-nav-toggle {
+  background: #1a1a1a;
+  color: #ffffff;
+  border-color: #1a1a1a;
+  font-weight: 600;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.ase-mobile-nav-toggle:hover {
+  opacity: 0.85;
+}
+.autosite-edit.is-preview-mode .ase-mobile-nav-toggle {
+  background: #b85c00;
+  border-color: #b85c00;
 }
 .ase-mobile-backdrop {
   display: none;

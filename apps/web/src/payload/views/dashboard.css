@@ -85,6 +85,8 @@
   gap: 6px;
   transition: background 0.15s ease;
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ash-btn-secondary:hover {
   background: #f4f3ec;
